@@ -1,0 +1,9 @@
+<RCC>
+    <qresource>
+         <file>images/TestDataAnalysis.png</file>
+    </qresource>
+<qresource prefix="/translations">
+        <file>TestDataAnslysis.qm</file>
+        <file>qt_zh_CN.qm</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,39 @@
+#if defined(UNDER_CE)
+	#include <winbase.h>
+#else
+	#include <winver.h>
+#endif
+IDI_ICON1 ICON DISCARDABLE "TestDataAnalysis.ico"
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,0,0,1
+ PRODUCTVERSION 3,0,0,1
+ FILEFLAGSMASK 0x3FL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "CompanyName", "Çï¸çÖÆ×÷"
+            VALUE "FileDescription", "A Simple DataLog Analysis Program"
+            VALUE "FileVersion", "3.0.0.1"
+            VALUE "InternalName", "TestDataAnalysis"
+            VALUE "LegalCopyright", "Copyright (C) 2015-2018"
+            VALUE "OriginalFilename", "TestDataAnalysis.exe"
+            VALUE "ProductName", "TestDataAnalysis"
+            VALUE "ProductVersion", "3.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
