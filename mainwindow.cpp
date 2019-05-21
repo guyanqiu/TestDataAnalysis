@@ -1718,6 +1718,7 @@ void MainWindow::on_UpdateInfoAction_triggered()
     message  += QObject::tr("- 2018.10.30 Support the Powertech TXT file format\n");
     message  += QObject::tr("- 2018.11.27 Change XLS file to XLSX file format\n");
     message  += QObject::tr("- 2019.03.16 Show Data Value on the Line Chart\n");
+	message  += QObject::tr("- 2019.05.20 When no Limits, Set Result Pass.\n");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
     msgDlg.exec();
 }

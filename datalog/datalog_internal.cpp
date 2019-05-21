@@ -222,7 +222,8 @@ void TestItemImpl::AddResultAndFlag( TestResult& result )
 	}
 	else
 	{
-		result.set_flag(RESULT_TESTED);
+        //result.set_flag(RESULT_TESTED);
+        result.set_flag(RESULT_PASS);
 	}
 	AddResult(result);
 }
@@ -1707,8 +1708,12 @@ DataLogError DataLogImpl::ReadFromTXT(const char* filename)
                     std::string item_upper_str = current_line.substr(33, 9);
                     std::string item_label_str = current_line.substr(49, 49);
 
-                    item->set_highlimit(std::atof(item_upper_str.c_str()));
-                    item->set_lowlimit(std::atof(item_lower_str.c_str()));
+                    std::size_t found_h = item_upper_str.find_first_of("+-0123456789.");
+                    if(found_h != std::string::npos) item->set_highlimit(std::atof(item_upper_str.c_str()));
+
+                    std::size_t found_l = item_lower_str.find_first_of("+-0123456789.");
+                    if(found_l != std::string::npos) item->set_lowlimit(std::atof(item_lower_str.c_str()));
+
                     item->set_label(item_label_str.c_str());
                     item->set_unit(item_units_str.c_str());
                     item->set_itemnumber(item_number_str.c_str());
@@ -1718,7 +1723,8 @@ DataLogError DataLogImpl::ReadFromTXT(const char* filename)
                 result.set_flag(RESULT_TESTED);
                 result.set_value(std::atof(result_str.c_str()));
                 result.set_index(current_site->get_device_count());
-                item->add_result(result);
+                //item->add_result(result);
+                item->add_result_flag(result);
             }
         }
     }
