@@ -99,7 +99,14 @@
      <item>
       <widget class="QPushButton" name="ShowFailItemButton">
        <property name="text">
-        <string>Show Fail TestItems</string>
+        <string>GRR Fail TestItems</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="ShowTCSFailButton">
+       <property name="text">
+        <string>TCS Fail TestItems</string>
        </property>
       </widget>
      </item>

@@ -30,6 +30,10 @@ private:
     std::string m_label;
     std::string m_unit;
 
+    double m_measure_guard_band;
+    double m_tcs_error;
+    double m_tcs;
+
 public:
     bool add_item(const TestItem* item);
     void set_default_lowspec(double low_spec);
@@ -53,9 +57,16 @@ public:
     const char* get_label() const;
     const char* get_unit() const;
 
+    double get_measure_guard_band() const;
+    double get_tcs_error() const;
+    double get_tcs() const;
+
 public:
     TestItem_GRR();
     ~TestItem_GRR();
+
+public:
+    void set_tcs_error(double tcs_error);
 };
 
 

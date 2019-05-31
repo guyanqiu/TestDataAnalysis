@@ -37,6 +37,12 @@ const double d2[21][19] = /* Row Number: Number of Subgroups(g), Column Number: 
         /* 21 */{1.12838, 1.69257, 2.05875, 2.32593, 2.53441, 2.70436, 2.84720, 2.97003, 3.07751, 3.17287, 3.25846, 3.33598, 3.40676, 3.47193, 3.53198, 3.58788, 3.64006, 3.68896, 3.73500}
 };
 
+double c4[26] = {0.0000,
+                 0.0000, 0.7979, 0.8862, 0.9213, 0.9400,
+                 0.9515, 0.9594, 0.9650, 0.9693, 0.9727,
+                 0.9754, 0.9776, 0.9794, 0.9810, 0.9823,
+                 0.9835, 0.9845, 0.9854, 0.9862, 0.9869,
+                 0.9876, 0.9882, 0.9887, 0.9892, 0.9896};
 
 //static std::wstring convert(const char* str)
 //{
@@ -64,6 +70,10 @@ TestItem_GRR::TestItem_GRR()
 
     m_default_high_spec = 9999.9;
     m_default_low_spec = -9999.9;
+
+    m_measure_guard_band = 0.0;
+    m_tcs_error = 0.0;
+    m_tcs = 0.0;
 }
 
 bool TestItem_GRR::add_item(const TestItem* item)
@@ -253,6 +263,51 @@ double TestItem_GRR::get_gr_r() const
         return gr_r;
 }
 
+
+void TestItem_GRR::set_tcs_error(double tcs_error)
+{
+    m_tcs_error = tcs_error;
+    m_measure_guard_band = 3.0 * tcs_error;
+
+
+    double t = 0.0;
+    if(m_highspec_valid && m_lowspec_valid)
+    {
+        t = m_high_spec - m_low_spec;
+        if(t == 0) m_tcs = 1.0;
+        else m_tcs = 6.0 * tcs_error / t;
+    }
+    else if(m_highspec_valid)
+    {
+        t = m_high_spec;
+        if(t == 0) m_tcs = 1.0;
+        else m_tcs = 3.0 * tcs_error / t;
+    }
+    else if(m_lowspec_valid)
+    {
+        t = m_low_spec;
+        if(t == 0) m_tcs = 1.0;
+        else m_tcs = 3.0 * tcs_error / t;
+    }
+    else
+    {
+        m_tcs = 0.0;
+    }
+}
+
+double TestItem_GRR::get_measure_guard_band() const
+{
+    return m_measure_guard_band;
+}
+double TestItem_GRR::get_tcs_error() const
+{
+    return m_tcs_error;
+}
+double TestItem_GRR::get_tcs() const
+{
+    return m_tcs;
+}
+
 TestItem_GRR::~TestItem_GRR()
 {
 }
@@ -374,6 +429,9 @@ GRR_CALCULATE_ERROR TestSite_GRR::calculate()
     if(m_item_count == 0) return GRR_ITEM_NOT_EXIST;
     if(m_data_count < 2) return GRR_DATACOUNT_TOO_FEW;
 
+    double c4_coeff = 1.0;
+    if(m_site_count <= 25) c4_coeff = c4[m_site_count];
+
     for(unsigned int i = 0; i < m_item_count; i++)
     {
         TestItem_GRR grr;
@@ -381,15 +439,38 @@ GRR_CALCULATE_ERROR TestSite_GRR::calculate()
         grr.set_default_highspec(m_high_spec);
         grr.set_default_lowspec(m_low_spec);
 
+        std::vector<double> sums(m_data_count, 0.0);
+        std::vector<double> sums_sq(m_data_count, 0.0);
         for(unsigned int s = 0; s < m_site_count; s++)
         {
             const TestSite* site = m_site_list[s];
             TestItem* item = site->get_item(i);
             grr.add_item(item);
+
+            for(unsigned int d = 0; d <m_data_count; d++)
+            {
+                TestResult result = item->get_result(d);
+                double temp_value = result.get_value();
+                sums[d] += temp_value;
+                sums_sq[d] += (temp_value*temp_value);
+            }
         }
+
+        double sum_stdev = 0.0;
+        for(unsigned int d = 0; d < m_data_count; d++)
+        {
+            double temp = sums_sq[d] - sums[d]*sums[d]/m_site_count;
+            if(temp < 0.0) temp = 0.0;
+            else temp = std::sqrt(temp/(m_site_count-1));
+            sum_stdev += temp;
+        }
+        double tcs_error = sum_stdev / (m_data_count*c4_coeff);
+        grr.set_tcs_error(tcs_error);
+
         m_grr_list.push_back(grr);
     }
     m_calculate_ok = true;
+
     return GRR_RESULT_IS_OK;
 }
 
@@ -439,6 +520,10 @@ bool TestSite_GRR::save_result_xls(const char* filename)
     xlsx.write(row, col++, "AV");
     xlsx.write(row, col++, "R&R");
     xlsx.write(row, col++, "GR&R");
+    xlsx.write(row, col++, "---");
+    xlsx.write(row, col++, "TCS-Error");
+    xlsx.write(row, col++, "MGB");
+    xlsx.write(row, col++, "TCS");
 
     row = 2;
     for(unsigned int i = 0; i < m_item_count; i++)
@@ -477,6 +562,15 @@ bool TestSite_GRR::save_result_xls(const char* filename)
         if(grr_value <= 0.1) xlsx.write(row, col++, grr_value, format_green);
         else if(grr_value > 0.3) xlsx.write(row, col++, grr_value, format_red);
         else xlsx.write(row, col++, grr_value, format_yellow);
+
+        col++;
+        xlsx.write(row, col++, grr.get_tcs_error());
+        xlsx.write(row, col++, grr.get_measure_guard_band());
+
+        double tcs_value = grr.get_tcs();
+        if(tcs_value <= 0.1) xlsx.write(row, col++, tcs_value, format_green);
+        else if(tcs_value > 0.3) xlsx.write(row, col++, tcs_value, format_red);
+        else xlsx.write(row, col++, tcs_value, format_yellow);
 
         row++;
         col++;
@@ -530,7 +624,8 @@ bool TestSite_GRR::save_result_csv(const char* filename)
     std::ofstream out(filename, std::ios::out );
     if(!out) return false;
 
-    out<<"TestNumber,TestLabel,HighSpec,LowSpec,Tolerance,Unit,MaxAvg,MinAvg,Xdiff,StDevAvg,EV,AV,R&R,GR&R\n";
+    out<<"TestNumber,TestLabel,HighSpec,LowSpec,Tolerance,Unit,MaxAvg,MinAvg,Xdiff,StDevAvg,EV,AV,R&R,GR&R,,";
+    out<<"TCS-Error,MGB,TCS"<<std::endl;
     for(unsigned int i = 0; i < m_item_count; i++)
     {
         TestItem_GRR grr = m_grr_list[i];
@@ -549,7 +644,10 @@ bool TestSite_GRR::save_result_csv(const char* filename)
         out<<grr.get_repeatability()<<",";
         out<<grr.get_reproducibility()<<",";
         out<<grr.get_r_r()<<",";
-        out<<100.0*grr.get_gr_r()<<"%"<<std::endl;
+        out<<100.0*grr.get_gr_r()<<"%"<<",,";
+        out<<grr.get_tcs_error()<<",";
+        out<<grr.get_measure_guard_band()<<",";
+        out<<100.0*grr.get_tcs()<<"%"<<std::endl;
     }
 
     out<<std::endl;
@@ -557,7 +655,6 @@ bool TestSite_GRR::save_result_csv(const char* filename)
     for(unsigned int i = 0; i < m_site_count; i++)
     {
         const TestSite *site = m_site_list[i];
-
         out<< site->get_name()<<std::endl;
         out<<"TestNumber,TestLabel,Max,Min,Range,Average,Stdev"<<std::endl;
 

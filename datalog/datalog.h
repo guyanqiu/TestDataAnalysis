@@ -140,6 +140,8 @@ public:
     double get_max() const;
     double get_min() const;
     double get_range() const;
+    double get_sum() const;
+    double get_sum_squares() const;
 
     void add_result(TestResult& result);
     void add_result_flag(TestResult& result);

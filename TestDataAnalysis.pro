@@ -8,7 +8,7 @@ QT       += core gui printsupport charts gui-private
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = TestDataAnalysis.Win10.3.0
+TARGET = TestDataAnalysis.Win10.3.1
 TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++11
 QMAKE_LFLAGS   += -static

@@ -72,6 +72,8 @@ public:
     double GetMax() const;
     double GetMin() const;
     double GetRange() const;
+    double GetSum() const;
+    double GetSumSquares() const;
 
     unsigned int GetResultTested() const;
     unsigned int GetResultPass() const;

@@ -466,6 +466,15 @@ double TestItem::get_range() const
     return impl->GetRange();
 }
 
+double TestItem::get_sum() const
+{
+    return impl->GetSum();
+}
+double TestItem::get_sum_squares() const
+{
+    return impl->GetSumSquares();
+}
+
 void TestItem::add_result(TestResult& result)
 {
     impl->AddResult(result);

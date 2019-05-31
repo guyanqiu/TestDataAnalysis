@@ -243,6 +243,15 @@ double TestItemImpl::GetRange() const
 	return (MaxValue - MinValue);
 }
 
+double TestItemImpl::GetSum() const
+{
+    return SumOfValues;
+}
+double TestItemImpl::GetSumSquares() const
+{
+    return SumOfSquares;
+}
+
 unsigned int TestItemImpl::GetResultTested() const
 {
 	return ResultTestedCount;

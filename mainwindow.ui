@@ -299,7 +299,7 @@
               <item>
                <widget class="QPushButton" name="GRRButton">
                 <property name="text">
-                 <string>GRR</string>
+                 <string>GRR &amp;&amp; TCS</string>
                 </property>
                </widget>
               </item>

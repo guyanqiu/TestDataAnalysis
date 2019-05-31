@@ -1151,7 +1151,7 @@ bool MainWindow::ShowGRRDataToTable(QTableWidget* table, TestSite_GRR* grr)
     unsigned int site_count = grr->get_site_count();
     unsigned int item_count = grr->get_item_count();
 
-    int row_count = 12 + site_count * 6;
+    int row_count = 16 + site_count * 6;
     int col_count = item_count;
 
     table->clear();
@@ -1174,6 +1174,10 @@ bool MainWindow::ShowGRRDataToTable(QTableWidget* table, TestSite_GRR* grr)
     row_labels.push_back(QString("AV(Reproducibility)"));
     row_labels.push_back(QString("R&R"));
     row_labels.push_back(QString("GR&R"));
+    row_labels.push_back(QString("----"));
+    row_labels.push_back(QString("TCS-Error"));
+    row_labels.push_back(QString("MGB"));
+    row_labels.push_back(QString("TCS"));
 
     mItemLabelList.clear();
     for(unsigned int i = 0; i < item_count; i++)
@@ -1188,6 +1192,7 @@ bool MainWindow::ShowGRRDataToTable(QTableWidget* table, TestSite_GRR* grr)
         double grr_value = 100.0 * item_grr.get_gr_r();
         if(grr_value > 100.0) grr_value = 100.0;
         str_grr.sprintf("%.4f%%",grr_value);
+
 
         row = 0;
         SetGridCellValue(table, row++, column, QString("%1").arg(item_grr.get_number()));
@@ -1206,6 +1211,21 @@ bool MainWindow::ShowGRRDataToTable(QTableWidget* table, TestSite_GRR* grr)
         if(grr_value <= 10) SetGridCellColor(table, row, column, Qt::green);
         else if(grr_value > 30) SetGridCellColor(table,row, column, Qt::red);
         else  SetGridCellColor(table,row, column, Qt::yellow);
+        row++;
+        row++;
+
+        SetGridCellValue(table, row++, column, QString("%1").arg(item_grr.get_tcs_error()));
+        SetGridCellValue(table, row++, column, QString("%1").arg(item_grr.get_measure_guard_band()));
+
+        double tcs_value = 100.0 * item_grr.get_tcs();
+        QString str_tcs;
+        str_tcs.sprintf("%.4f%%", tcs_value);
+        SetGridCellValue(table, row, column, str_tcs);
+
+        if(tcs_value <= 10) SetGridCellColor(table, row, column, Qt::green);
+        else if(tcs_value > 30) SetGridCellColor(table,row, column, Qt::red);
+        else  SetGridCellColor(table,row, column, Qt::yellow);
+
         row++;
         index++;
         column++;
@@ -1676,7 +1696,7 @@ void MainWindow::on_ScatterPlotButton_clicked()
 void MainWindow::on_AboutAction_triggered()
 {
     QString title = QObject::tr("About");
-    QString message = QObject::tr("------ Version 3.0.0.1 -------\n");
+    QString message = QObject::tr("------ Version 3.0.0.2 -------\n");
     message += QObject::tr("-- This Software is Free of Charge, \n");
     message += QObject::tr("   Unlicensed and comes with No Warranty.");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
@@ -1719,6 +1739,7 @@ void MainWindow::on_UpdateInfoAction_triggered()
     message  += QObject::tr("- 2018.11.27 Change XLS file to XLSX file format\n");
     message  += QObject::tr("- 2019.03.16 Show Data Value on the Line Chart\n");
 	message  += QObject::tr("- 2019.05.20 When no Limits, Set Result Pass.\n");
+    message  += QObject::tr("- 2019.05.25 Add the TCS(Test Capability Study). \n");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
     msgDlg.exec();
 }

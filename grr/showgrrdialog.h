@@ -42,10 +42,13 @@ private slots:
 
     void on_SaveResultButton_clicked();
 
+    void on_ShowTCSFailButton_clicked();
+
 private:
     Ui::ShowGRRDialog *ui;
     bool mShowTestItems;
     int mGRR_RowNumber;
+    int mTCS_RowNumber;
     TestSite_GRR* mGrr;
 
 };
