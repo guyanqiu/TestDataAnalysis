@@ -34,6 +34,11 @@ private:
     double m_tcs_error;
     double m_tcs;
 
+    double m_anova_mse;
+    double m_anova_msa;
+    double m_anova_ev;
+    double m_anova_av;
+
 public:
     bool add_item(const TestItem* item);
     void set_default_lowspec(double low_spec);
@@ -67,6 +72,7 @@ public:
 
 public:
     void set_tcs_error(double tcs_error);
+    void set_anova(double anova_mse, double anova_msa);
 };
 
 

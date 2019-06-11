@@ -43,12 +43,14 @@ void CalSettingDialog::SetDefaultHighLimit(double high_limit)
     ui->HighLimitLineEdit->setText(str_high);
 }
 
-void CalSettingDialog::SetEVMode(int mode)
+void CalSettingDialog::SetGRRMode(int mode)
 {
     if(mode == 0)
         ui->Mode0RadioButton->setChecked(true);
-    else
+    else if(mode == 1)
         ui->Mode1RadioButton->setChecked(true);
+    else
+        ui->Mode2RadioButton->setChecked(true);
 }
 
 void CalSettingDialog::SetCorrelationMode(int mode)
@@ -59,12 +61,13 @@ void CalSettingDialog::SetCorrelationMode(int mode)
         ui->radioButton_Corr2->setChecked(true);
 }
 
-int CalSettingDialog::GetEVMode()
+int CalSettingDialog::GetGRRMode()
 {
     if(ui->Mode0RadioButton->isChecked())
         return 0;
-    else
+    else if(ui->Mode1RadioButton->isChecked())
         return 1;
+    else return 2;
 }
 
 int CalSettingDialog::GetCorrelationMode()

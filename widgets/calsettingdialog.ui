@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>373</width>
-    <height>441</height>
+    <width>542</width>
+    <height>461</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <item>
       <widget class="QGroupBox" name="EVGroupBox">
        <property name="title">
-        <string>Gauge Repeatability Calculate Method</string>
+        <string>Gauge Repeatability and Reproducibility Calculate Method</string>
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
@@ -27,7 +27,7 @@
           <item>
            <widget class="QRadioButton" name="Mode0RadioButton">
             <property name="text">
-             <string>EV = 6.0 * Pooled Standard Deviation</string>
+             <string>Average-Range: EV = 6.0 * Pooled Standard Deviation</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -37,7 +37,14 @@
           <item>
            <widget class="QRadioButton" name="Mode1RadioButton">
             <property name="text">
-             <string>EV = 6.0 * Range / d2</string>
+             <string>Average-Range: EV = 6.0 * Range / d2</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="Mode2RadioButton">
+            <property name="text">
+             <string>ANOVA Method(Analysis of Variance)</string>
             </property>
            </widget>
           </item>

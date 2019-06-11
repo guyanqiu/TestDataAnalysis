@@ -17,8 +17,8 @@ public:
     void SetDefaultLowLimit(double low_limit);
     void SetDefaultHighLimit(double high_limit);
 
-    void SetEVMode(int mode);
-    int GetEVMode();
+    void SetGRRMode(int mode);
+    int GetGRRMode();
     double GetDefaultHighLimit();
     double GetDefaultLowLimit();
 

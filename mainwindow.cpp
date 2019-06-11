@@ -248,7 +248,7 @@ void MainWindow::on_DataSetButton_clicked()
     CalSettingDialog dialog(this);
     dialog.SetDefaultHighLimit(mDefaultHighLimit);
     dialog.SetDefaultLowLimit(mDefaultLowLimit);
-    dialog.SetEVMode(mGRR_Mode);
+    dialog.SetGRRMode(mGRR_Mode);
     dialog.SetCorrelationMode(mCorr_Mode);
     dialog.SetCorrelationSpec(mCorrelationSpec*100.0);
     int ret = dialog.exec();
@@ -257,7 +257,7 @@ void MainWindow::on_DataSetButton_clicked()
         mDefaultHighLimit = dialog.GetDefaultHighLimit();
         mDefaultLowLimit = dialog.GetDefaultLowLimit();
         mCorrelationSpec = dialog.GetCorrelationSpecValue();
-        mGRR_Mode = dialog.GetEVMode();
+        mGRR_Mode = dialog.GetGRRMode();
         mCorr_Mode = dialog.GetCorrelationMode();
         ShowItemStatisticToTable();
     }
@@ -1214,17 +1214,17 @@ bool MainWindow::ShowGRRDataToTable(QTableWidget* table, TestSite_GRR* grr)
         row++;
         row++;
 
+        // TCS
         SetGridCellValue(table, row++, column, QString("%1").arg(item_grr.get_tcs_error()));
         SetGridCellValue(table, row++, column, QString("%1").arg(item_grr.get_measure_guard_band()));
-
         double tcs_value = 100.0 * item_grr.get_tcs();
         QString str_tcs;
         str_tcs.sprintf("%.4f%%", tcs_value);
         SetGridCellValue(table, row, column, str_tcs);
-
         if(tcs_value <= 10) SetGridCellColor(table, row, column, Qt::green);
         else if(tcs_value > 30) SetGridCellColor(table,row, column, Qt::red);
         else  SetGridCellColor(table,row, column, Qt::yellow);
+
 
         row++;
         index++;
@@ -1740,6 +1740,7 @@ void MainWindow::on_UpdateInfoAction_triggered()
     message  += QObject::tr("- 2019.03.16 Show Data Value on the Line Chart\n");
 	message  += QObject::tr("- 2019.05.20 When no Limits, Set Result Pass.\n");
     message  += QObject::tr("- 2019.05.25 Add the TCS(Test Capability Study). \n");
+    message  += QObject::tr("- 2019.06.11 Add ANOVA Method for GRR Calculation. \n");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
     msgDlg.exec();
 }

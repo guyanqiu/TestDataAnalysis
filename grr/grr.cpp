@@ -74,6 +74,11 @@ TestItem_GRR::TestItem_GRR()
     m_measure_guard_band = 0.0;
     m_tcs_error = 0.0;
     m_tcs = 0.0;
+
+    m_anova_mse = 0.0;
+    m_anova_msa = 0.0;
+    m_anova_ev = 0.0;
+    m_anova_av = 0.0;
 }
 
 bool TestItem_GRR::add_item(const TestItem* item)
@@ -217,7 +222,7 @@ double TestItem_GRR::get_repeatability() const
         double stdev_avg = get_stdev_bar();
         return k_factor * stdev_avg;
     }
-    else
+    else if(m_mode == 1)
     {
         unsigned int g = m_site_count;
         unsigned int m = m_data_count;
@@ -227,23 +232,34 @@ double TestItem_GRR::get_repeatability() const
         double range_avg = get_range_bar();
         return (k_factor * k1 * range_avg);
     }
+    else
+    {
+        return m_anova_ev;
+    }
 }
 
 double TestItem_GRR::get_reproducibility() const
 {
     if(m_site_count <= 1) return 0.0;
 
-    unsigned int g = 1;
-    unsigned int m = m_site_count;
-    if(m > MAX_SUBGROUP_SIZE) m = MAX_SUBGROUP_SIZE;
-    double k2 = 1.0/d2[g-1][m-2];
+    if(m_mode == 0 || m_mode == 1)
+    {
+        unsigned int g = 1;
+        unsigned int m = m_site_count;
+        if(m > MAX_SUBGROUP_SIZE) m = MAX_SUBGROUP_SIZE;
+        double k2 = 1.0/d2[g-1][m-2];
 
-    double ev = get_repeatability();
-    double avg_diff = get_average_diff();
-    double av = (k_factor * avg_diff * k2) * (k_factor * avg_diff * k2) ;
-    av = av - ev * ev / m_data_count;
-    if(av < 0) return 0.0;
-    else return std::sqrt(av);
+        double ev = get_repeatability();
+        double avg_diff = get_average_diff();
+        double av = (k_factor * avg_diff * k2) * (k_factor * avg_diff * k2) ;
+        av = av - ev * ev / m_data_count;
+        if(av < 0) return 0.0;
+        else return std::sqrt(av);
+    }
+    else
+    {
+        return m_anova_av;
+    }
 }
 
 double TestItem_GRR::get_r_r() const
@@ -261,6 +277,16 @@ double TestItem_GRR::get_gr_r() const
         double gr_r = rr/t;
         if(gr_r > 1.0) gr_r = 1.0;
         return gr_r;
+}
+
+void TestItem_GRR::set_anova(double anova_mse, double anova_msa)
+{
+    m_anova_msa = anova_msa;
+    m_anova_mse = anova_mse;
+    if(m_anova_msa < 0) m_anova_msa = 0.0;
+    if(m_anova_mse < 0) m_anova_mse = 0.0;
+    m_anova_ev = k_factor * sqrt(m_anova_mse);
+    m_anova_av = k_factor * sqrt(m_anova_msa/m_data_count);
 }
 
 
@@ -299,6 +325,7 @@ double TestItem_GRR::get_measure_guard_band() const
 {
     return m_measure_guard_band;
 }
+
 double TestItem_GRR::get_tcs_error() const
 {
     return m_tcs_error;
@@ -441,11 +468,19 @@ GRR_CALCULATE_ERROR TestSite_GRR::calculate()
 
         std::vector<double> sums(m_data_count, 0.0);
         std::vector<double> sums_sq(m_data_count, 0.0);
+
+        double ANOVA_R = 0.0, ANOVA_P=0.0, ANOVA_Q=0.0;
+
         for(unsigned int s = 0; s < m_site_count; s++)
         {
             const TestSite* site = m_site_list[s];
             TestItem* item = site->get_item(i);
             grr.add_item(item);
+
+            ANOVA_R += item->get_sum_squares();
+            double sum_per_site = item->get_sum();
+            ANOVA_Q += (sum_per_site*sum_per_site/m_data_count);
+            ANOVA_P += sum_per_site;
 
             for(unsigned int d = 0; d <m_data_count; d++)
             {
@@ -455,6 +490,7 @@ GRR_CALCULATE_ERROR TestSite_GRR::calculate()
                 sums_sq[d] += (temp_value*temp_value);
             }
         }
+        ANOVA_P = (ANOVA_P*ANOVA_P)/(m_data_count*m_site_count);
 
         double sum_stdev = 0.0;
         for(unsigned int d = 0; d < m_data_count; d++)
@@ -466,6 +502,13 @@ GRR_CALCULATE_ERROR TestSite_GRR::calculate()
         }
         double tcs_error = sum_stdev / (m_data_count*c4_coeff);
         grr.set_tcs_error(tcs_error);
+
+        double ANOVA_Se = ANOVA_R - ANOVA_Q;
+        double ANOVA_Sa = ANOVA_Q - ANOVA_P;
+        double ANOVA_MSe = ANOVA_Se/(m_data_count*m_site_count - m_site_count);
+        double ANOVA_MSa = ANOVA_Sa /(m_site_count - 1);
+
+        grr.set_anova(ANOVA_MSe,ANOVA_MSa );
 
         m_grr_list.push_back(grr);
     }
