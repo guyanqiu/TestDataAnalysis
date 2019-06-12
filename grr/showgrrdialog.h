@@ -49,6 +49,7 @@ private:
     bool mShowTestItems;
     int mGRR_RowNumber;
     int mTCS_RowNumber;
+    int mFtest_RowNumber;
     TestSite_GRR* mGrr;
 
 };

@@ -16,6 +16,7 @@ ShowGRRDialog::ShowGRRDialog(QWidget *parent) :
     mShowTestItems = false;
     mGRR_RowNumber = 11;
     mTCS_RowNumber = 15;
+    mFtest_RowNumber = 18;
     ui->ItemListGroupBox->hide();
     mGrr = NULL;
 }
@@ -63,11 +64,17 @@ void ShowGRRDialog::on_TestItemListWidget_currentRowChanged(int currentRow)
     {
         if(item->checkState() == Qt::Checked)
         {
-            QTableWidgetItem *item = ui->GrrTableWidget->item(11,currentRow); // GR&R Row Number=11
+            QTableWidgetItem *item = ui->GrrTableWidget->item(mGRR_RowNumber,currentRow); // GR&R Row Number=11
             if(!item) return;
 
             ui->GrrTableWidget->selectColumn(currentRow);
             ui->GrrTableWidget->setItemSelected(item, false);
+
+            QTableWidgetItem *item_tcs = ui->GrrTableWidget->item(mTCS_RowNumber,currentRow);
+            if(item_tcs) ui->GrrTableWidget->setItemSelected(item_tcs, false);
+
+            QTableWidgetItem *item_ftest = ui->GrrTableWidget->item(mFtest_RowNumber,currentRow);
+            if(item_ftest) ui->GrrTableWidget->setItemSelected(item_ftest, false);
         }
     }
 }
@@ -148,6 +155,7 @@ void ShowGRRDialog::on_TestItemListWidget_clicked(const QModelIndex &index)
 
             //mGRR_RowNumber = 11;
             //mTCS_RowNumber = 15;
+            // mFtest_RowNumber = 18;
             QTableWidgetItem *item = ui->GrrTableWidget->item(mGRR_RowNumber,n);
             if(!item) return;
 
@@ -156,6 +164,9 @@ void ShowGRRDialog::on_TestItemListWidget_clicked(const QModelIndex &index)
 
             QTableWidgetItem *item_tcs = ui->GrrTableWidget->item(mTCS_RowNumber,n);
             if(item_tcs) ui->GrrTableWidget->setItemSelected(item_tcs, false);
+
+            QTableWidgetItem *item_ftest = ui->GrrTableWidget->item(mFtest_RowNumber,n);
+            if(item_ftest) ui->GrrTableWidget->setItemSelected(item_ftest, false);
         }
     }
 }

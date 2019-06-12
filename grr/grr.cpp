@@ -50,6 +50,93 @@ double c4[26] = {0.0000,
 //    return std::wstring(reinterpret_cast<const wchar_t *>(temp.utf16()));
 //}
 
+static double betacdf(double x, double a, double b)
+{
+    double myeps = 2.2204e-16;
+    double tiny = 1.0e-30;
+    if (x < 0.0 || x > 1.0) return 1.0/0.0;
+    if (x > (a+1.0)/(a+b+2.0)) return (1.0-betacdf(1.0-x, b,a));
+
+    double temp = lgamma(a)+lgamma(b)-lgamma(a+b);
+    double y = exp(log(x)*a+log(1.0-x)*b-temp) / a;
+    double f = 1.0, c = 1.0, d = 0.0;
+
+    int i, m;
+    for (i = 0; i <= 400; ++i)
+    {
+        m = i/2;
+        double numerator;
+        if (i == 0) numerator = 1.0;
+        else if (i % 2 == 0) numerator = (m*(b-m)*x)/((a+2.0*m-1.0)*(a+2.0*m));
+        else  numerator = -((a+m)*(a+b+m)*x)/((a+2.0*m)*(a+2.0*m+1));
+
+
+        d = 1.0 + numerator * d;
+        if (fabs(d) < tiny) d = tiny;
+        d = 1.0 / d;
+        c = 1.0 + numerator / c;
+        if (fabs(c) < tiny) c = tiny;
+
+        const double cd = c*d;
+        f *= cd;
+
+        if (fabs(1.0-cd) < myeps)  return y * (f-1.0);
+    }
+    return 1.0e35;
+}
+
+static  double betapdf(double x, double a, double b)
+{
+     double temp = lgamma(a+b) - lgamma(a) - lgamma(b);
+     if(x>0 && x< 1 && a > 0 && b > 0 && (a!=1 || b!= 1))
+     return exp((a-1)*log(x) + (b-1)*log(1-x) + temp);
+
+     if(x == 0 && a == 1 && b > 0 && b != 1)
+     return exp(temp);
+
+     if(x==1 && b == 1 && a>0 && a!=1)
+     return exp(temp);
+
+     if(x >= 0 && x <= 1 && a==1 && b== 1)
+     return 1.0;
+
+     else return 1.0;
+}
+
+static double betainv(double x, double a, double b)
+{
+     double myeps = 2.2204e-16;
+     double y = a / (a+b);
+
+     if(y < myeps) y = sqrt(myeps);
+     if(y > 1- myeps) y = 1 - sqrt(myeps);
+
+     double y_new = y;
+     double h = 0.0;
+     double y_old = y_new;
+     for(int i = 0; i <= 40; i++)
+     {
+        y_old = y_new;
+        double cdf = betacdf(y_old, a, b);
+        double pdf = betapdf(y_old,a,b);
+        h = (cdf - x)/ pdf;
+        y_new = y_old - h;
+        if(y_new <= myeps)
+            y_new = y_old / 10;
+        if(y_new >= 1.0 - myeps)
+            y_new = 1-(1-y_old)/10;
+        h = y_old - y_new;
+        if(fabs(h) < sqrt(myeps)) break;
+     }
+     return y_new;
+}
+
+static double finv(double x, int m, int n)
+{
+    return ((1.0/betainv(1-x, n/2.0, m/2.0)-1)*1.0*n/m);
+}
+
+
 TestItem_GRR::TestItem_GRR()
 {
     m_mode = 0;
@@ -79,6 +166,9 @@ TestItem_GRR::TestItem_GRR()
     m_anova_msa = 0.0;
     m_anova_ev = 0.0;
     m_anova_av = 0.0;
+    m_anova_f = 0.0;
+    m_anova_ftest = 0.0;
+    m_anova_alpha = 0.0;
 }
 
 bool TestItem_GRR::add_item(const TestItem* item)
@@ -279,14 +369,27 @@ double TestItem_GRR::get_gr_r() const
         return gr_r;
 }
 
-void TestItem_GRR::set_anova(double anova_mse, double anova_msa)
+void TestItem_GRR::set_anova(double anova_mse, double anova_msa, double anova_alpha)
 {
     m_anova_msa = anova_msa;
     m_anova_mse = anova_mse;
+    m_anova_alpha = anova_alpha;
     if(m_anova_msa < 0) m_anova_msa = 0.0;
     if(m_anova_mse < 0) m_anova_mse = 0.0;
     m_anova_ev = k_factor * sqrt(m_anova_mse);
     m_anova_av = k_factor * sqrt(m_anova_msa/m_data_count);
+    if(m_anova_mse == 0) m_anova_f = 0.0;
+    else m_anova_f = m_anova_msa / m_anova_mse;
+    m_anova_ftest = finv(1.0- m_anova_alpha, m_site_count-1, m_site_count*m_data_count - m_site_count);
+}
+
+double TestItem_GRR::get_anova_f() const
+{
+    return m_anova_f;
+}
+double TestItem_GRR::get_anova_ftest() const
+{
+    return m_anova_ftest;
 }
 
 
@@ -305,13 +408,13 @@ void TestItem_GRR::set_tcs_error(double tcs_error)
     }
     else if(m_highspec_valid)
     {
-        t = m_high_spec;
+        t = fabs(m_high_spec);
         if(t == 0) m_tcs = 1.0;
         else m_tcs = 3.0 * tcs_error / t;
     }
     else if(m_lowspec_valid)
     {
-        t = m_low_spec;
+        t = fabs(m_low_spec);
         if(t == 0) m_tcs = 1.0;
         else m_tcs = 3.0 * tcs_error / t;
     }
@@ -347,6 +450,7 @@ TestSite_GRR::TestSite_GRR(double default_low_spec, double default_high_spec, in
     m_site_count = 0;
     m_data_count = 0;
     m_calculate_ok = false;
+    m_anova_alpha = 0.05;
 }
 
 TestSite_GRR::TestSite_GRR()
@@ -357,6 +461,7 @@ TestSite_GRR::TestSite_GRR()
     m_site_count = 0;
     m_data_count = 0;
     m_calculate_ok = false;
+    m_anova_alpha = 0.05;
 }
 
 TestSite_GRR::~TestSite_GRR()
@@ -508,7 +613,7 @@ GRR_CALCULATE_ERROR TestSite_GRR::calculate()
         double ANOVA_MSe = ANOVA_Se/(m_data_count*m_site_count - m_site_count);
         double ANOVA_MSa = ANOVA_Sa /(m_site_count - 1);
 
-        grr.set_anova(ANOVA_MSe,ANOVA_MSa );
+        grr.set_anova(ANOVA_MSe,ANOVA_MSa,m_anova_alpha );
 
         m_grr_list.push_back(grr);
     }
@@ -567,6 +672,9 @@ bool TestSite_GRR::save_result_xls(const char* filename)
     xlsx.write(row, col++, "TCS-Error");
     xlsx.write(row, col++, "MGB");
     xlsx.write(row, col++, "TCS");
+    xlsx.write(row, col++, "---");
+    xlsx.write(row, col++, "F(alpha=0.05)");
+    xlsx.write(row, col++, "F");
 
     row = 2;
     for(unsigned int i = 0; i < m_item_count; i++)
@@ -602,6 +710,10 @@ bool TestSite_GRR::save_result_xls(const char* filename)
         format_yellow.setPatternBackgroundColor(QColor(Qt::yellow));
         format_yellow.setNumberFormat("0.00%");
 
+        QXlsx::Format format_yellow2;
+        format_yellow2.setPatternBackgroundColor(QColor(Qt::yellow));
+        format_yellow2.setNumberFormat("0.00");
+
         if(grr_value <= 0.1) xlsx.write(row, col++, grr_value, format_green);
         else if(grr_value > 0.3) xlsx.write(row, col++, grr_value, format_red);
         else xlsx.write(row, col++, grr_value, format_yellow);
@@ -614,6 +726,13 @@ bool TestSite_GRR::save_result_xls(const char* filename)
         if(tcs_value <= 0.1) xlsx.write(row, col++, tcs_value, format_green);
         else if(tcs_value > 0.3) xlsx.write(row, col++, tcs_value, format_red);
         else xlsx.write(row, col++, tcs_value, format_yellow);
+
+        col++;
+        double ftest = grr.get_anova_ftest();
+        double f = grr.get_anova_f();
+        xlsx.write(row, col++, ftest);
+        if(f > ftest) xlsx.write(row, col++, f, format_yellow2 );
+        else xlsx.write(row, col++, f);
 
         row++;
         col++;
@@ -668,7 +787,8 @@ bool TestSite_GRR::save_result_csv(const char* filename)
     if(!out) return false;
 
     out<<"TestNumber,TestLabel,HighSpec,LowSpec,Tolerance,Unit,MaxAvg,MinAvg,Xdiff,StDevAvg,EV,AV,R&R,GR&R,,";
-    out<<"TCS-Error,MGB,TCS"<<std::endl;
+    out<<"TCS-Error,MGB,TCS,,";
+    out<<"F(alpha=0.05),F"<<std::endl;
     for(unsigned int i = 0; i < m_item_count; i++)
     {
         TestItem_GRR grr = m_grr_list[i];
@@ -690,7 +810,9 @@ bool TestSite_GRR::save_result_csv(const char* filename)
         out<<100.0*grr.get_gr_r()<<"%"<<",,";
         out<<grr.get_tcs_error()<<",";
         out<<grr.get_measure_guard_band()<<",";
-        out<<100.0*grr.get_tcs()<<"%"<<std::endl;
+        out<<100.0*grr.get_tcs()<<"%"<<",,";
+        out<<grr.get_anova_ftest()<<",";
+        out<<grr.get_anova_f()<<std::endl;
     }
 
     out<<std::endl;

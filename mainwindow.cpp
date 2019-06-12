@@ -840,19 +840,45 @@ void MainWindow::PlotSPCChart()
     mChart->setAxisY(axisY, series_high_limit);
 }
 
-static void get_statistocal_box_values(const TestItem* item, double& minimum, double& lower_quart, double& median, double& upper_quart, double& maximum )
+
+static QVector<double> get_statistocal_box_values(const TestItem* item, double& minimum, double& lower_quart, double& median, double& upper_quart, double& maximum )
 {
+    QVector<double> outliers;
     unsigned int result_count = item->get_result_count();
-    if(result_count < 4 ) return;
+    if(result_count < 4 ) return outliers;
     std::vector<double> result(result_count, 0.0);
     for(unsigned int i = 0; i < result_count; i++)
         result[i]=item->get_result(i).get_value();
     std::sort(std::begin(result), std::end(result));
     minimum = result[0];
-    lower_quart = result[result_count/4];
-    median = result[result_count/2];
-    upper_quart = result[result_count*3/4];
+    lower_quart = result[int(result_count/4.0+0.5)];
+    median = result[int(result_count/2.0 + 0.5)];
+    upper_quart = result[int(result_count*3/4.0+0.5)];
     maximum = result[result_count-1];
+
+//    double L = upper_quart - lower_quart;
+//    double upper_outer = upper_quart + 1.5*L;
+//    if(maximum > upper_outer)
+//    {
+//        maximum = upper_outer;
+//        for(int i = result_count-1; i >=  int(result_count*3/4.0); i--)
+//        {
+//            if(result[i] > upper_outer) outliers.push_back(result[i]);
+//            else break;
+//        }
+//    }
+
+//    double lower_outer = lower_quart - 1.5*L;
+//    if(minimum < lower_outer)
+//    {
+//        minimum = lower_outer;
+//        for(int i = 0; i <= int(result_count/4.0); i++)
+//        {
+//            if(result[i] < lower_outer) outliers.push_back(result[i]);
+//            else break;
+//        }
+//    }
+    return outliers;
 }
 
 void MainWindow::PlotStatisticalBoxChart()
@@ -1151,7 +1177,7 @@ bool MainWindow::ShowGRRDataToTable(QTableWidget* table, TestSite_GRR* grr)
     unsigned int site_count = grr->get_site_count();
     unsigned int item_count = grr->get_item_count();
 
-    int row_count = 16 + site_count * 6;
+    int row_count = 19 + site_count * 6;
     int col_count = item_count;
 
     table->clear();
@@ -1178,6 +1204,10 @@ bool MainWindow::ShowGRRDataToTable(QTableWidget* table, TestSite_GRR* grr)
     row_labels.push_back(QString("TCS-Error"));
     row_labels.push_back(QString("MGB"));
     row_labels.push_back(QString("TCS"));
+    row_labels.push_back(QString("----"));
+    row_labels.push_back(QString("F(alpha=0.05)"));
+    row_labels.push_back(QString("F"));
+
 
     mItemLabelList.clear();
     for(unsigned int i = 0; i < item_count; i++)
@@ -1224,9 +1254,16 @@ bool MainWindow::ShowGRRDataToTable(QTableWidget* table, TestSite_GRR* grr)
         if(tcs_value <= 10) SetGridCellColor(table, row, column, Qt::green);
         else if(tcs_value > 30) SetGridCellColor(table,row, column, Qt::red);
         else  SetGridCellColor(table,row, column, Qt::yellow);
-
-
         row++;
+        row++;
+
+        double f = item_grr.get_anova_f();
+        double f_test = item_grr.get_anova_ftest();
+        SetGridCellValue(table, row++, column, QString("%1").arg(f_test));
+        SetGridCellValue(table, row, column, QString("%1").arg(f));
+        if(f > f_test) SetGridCellColor(table,row, column, Qt::yellow);
+        row++;
+
         index++;
         column++;
     }
@@ -1696,7 +1733,7 @@ void MainWindow::on_ScatterPlotButton_clicked()
 void MainWindow::on_AboutAction_triggered()
 {
     QString title = QObject::tr("About");
-    QString message = QObject::tr("------ Version 3.0.0.2 -------\n");
+    QString message = QObject::tr("------ Version 3.1.0.2 -------\n");
     message += QObject::tr("-- This Software is Free of Charge, \n");
     message += QObject::tr("   Unlicensed and comes with No Warranty.");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);

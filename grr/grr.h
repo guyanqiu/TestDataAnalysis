@@ -38,6 +38,9 @@ private:
     double m_anova_msa;
     double m_anova_ev;
     double m_anova_av;
+    double m_anova_f;
+    double m_anova_ftest;
+    double m_anova_alpha;
 
 public:
     bool add_item(const TestItem* item);
@@ -61,6 +64,8 @@ public:
     unsigned int get_number() const;
     const char* get_label() const;
     const char* get_unit() const;
+    double get_anova_f() const;
+    double get_anova_ftest() const;
 
     double get_measure_guard_band() const;
     double get_tcs_error() const;
@@ -72,7 +77,7 @@ public:
 
 public:
     void set_tcs_error(double tcs_error);
-    void set_anova(double anova_mse, double anova_msa);
+    void set_anova(double anova_mse, double anova_msa, double anova_alpha);
 };
 
 
@@ -103,6 +108,7 @@ private:
     double m_high_spec;
     int m_mode;
     bool m_calculate_ok;
+    double m_anova_alpha;
 
     std::vector<const TestSite*> m_site_list;
     std::vector<TestItem_GRR> m_grr_list;
