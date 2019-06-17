@@ -239,8 +239,6 @@ void StdfDialog::UpdateUi()
     }
 }
 
-
-
 void StdfDialog::on_RecordListWidget_clicked(const QModelIndex &index)
 {
     int row = index.row();
@@ -317,7 +315,7 @@ void StdfDialog::ShowStdfATR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
     ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"SETUP_T";
@@ -325,7 +323,6 @@ void StdfDialog::ShowStdfATR()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        ui->RecordTableWidget->insertRow(i);
         StdfATR* record = (StdfATR*)(stdf_file->get_record(ATR_TYPE, i));
 
         table_set_value(i, 0, record->get_modify_time());  // SETUP_T
@@ -334,7 +331,7 @@ void StdfDialog::ShowStdfATR()
         progress_bar.setValue(i);
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfMIR()
@@ -511,7 +508,7 @@ void StdfDialog::ShowStdfHBR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
     ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"HEAD_NUM";
@@ -523,7 +520,6 @@ void StdfDialog::ShowStdfHBR()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        ui->RecordTableWidget->insertRow(i);
         StdfHBR* record = (StdfHBR*)(stdf_file->get_record(HBR_TYPE, i));
 
         int col = 0;
@@ -537,7 +533,7 @@ void StdfDialog::ShowStdfHBR()
         progress_bar.setValue(i);
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfSBR()
@@ -552,7 +548,7 @@ void StdfDialog::ShowStdfSBR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
     ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"HEAD_NUM";
@@ -564,7 +560,6 @@ void StdfDialog::ShowStdfSBR()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        ui->RecordTableWidget->insertRow(i);
         StdfSBR* record = (StdfSBR*)(stdf_file->get_record(SBR_TYPE, i));
 
         int col = 0;
@@ -578,7 +573,7 @@ void StdfDialog::ShowStdfSBR()
         progress_bar.setValue(i);
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfPMR()
@@ -872,7 +867,7 @@ void StdfDialog::ShowStdfWIR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
     ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"HEAD_NUM";
@@ -882,7 +877,6 @@ void StdfDialog::ShowStdfWIR()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        ui->RecordTableWidget->insertRow(i);
         StdfWIR* record = (StdfWIR*)(stdf_file->get_record(WIR_TYPE, i));
 
         int col = 0;
@@ -893,7 +887,7 @@ void StdfDialog::ShowStdfWIR()
         progress_bar.setValue(i);
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfWRR()
@@ -908,7 +902,7 @@ void StdfDialog::ShowStdfWRR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
     ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"HEAD_NUM";
@@ -928,7 +922,6 @@ void StdfDialog::ShowStdfWRR()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        ui->RecordTableWidget->insertRow(i);
         StdfWRR* record = (StdfWRR*)(stdf_file->get_record(WRR_TYPE, i));
 
         int col = 0;
@@ -949,7 +942,7 @@ void StdfDialog::ShowStdfWRR()
         progress_bar.setValue(i);
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfWCR()
@@ -1014,7 +1007,7 @@ void StdfDialog::ShowStdfPIR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
     ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"HEAD_NUM";
@@ -1022,7 +1015,6 @@ void StdfDialog::ShowStdfPIR()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        ui->RecordTableWidget->insertRow(i);
         StdfPIR* record = (StdfPIR*)(stdf_file->get_record(PIR_TYPE, i));
 
         int col = 0;
@@ -1031,7 +1023,7 @@ void StdfDialog::ShowStdfPIR()
         progress_bar.setValue(i);
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfPRR()
@@ -1046,7 +1038,7 @@ void StdfDialog::ShowStdfPRR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
     ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"HEAD_NUM";
@@ -1063,7 +1055,6 @@ void StdfDialog::ShowStdfPRR()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        ui->RecordTableWidget->insertRow(i);
         StdfPRR* record = (StdfPRR*)(stdf_file->get_record(PRR_TYPE, i));
 
         int col = 0;
@@ -1081,7 +1072,7 @@ void StdfDialog::ShowStdfPRR()
         progress_bar.setValue(i);
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfTSR()
@@ -1096,7 +1087,7 @@ void StdfDialog::ShowStdfTSR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 	
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
 	ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"HEAD_NUM";
@@ -1118,8 +1109,6 @@ void StdfDialog::ShowStdfTSR()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        ui->RecordTableWidget->insertRow(i);
-
         StdfTSR* record = (StdfTSR*)(stdf_file->get_record(TSR_TYPE, i));
 
         int col = 0;
@@ -1143,7 +1132,7 @@ void StdfDialog::ShowStdfTSR()
         progress_bar.setValue(i);
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 void StdfDialog::ShowStdfPTR()
 {
@@ -1159,7 +1148,7 @@ void StdfDialog::ShowStdfPTR()
 	
 
 	ui->RecordTableWidget->setColumnCount(col_count);
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
 	
     col_labels<<"Part ID";
 	col_labels<<"TEST_NUM";
@@ -1201,7 +1190,6 @@ void StdfDialog::ShowStdfPTR()
             const char* part_id = temp_prr->get_part_id();
             for(unsigned int i = 0; i < ptr_count; i++)
             {
-                ui->RecordTableWidget->insertRow(index_count);
                 StdfPTR* record = temp_ptrs[i];
 
                 int col = 0;
@@ -1239,7 +1227,7 @@ void StdfDialog::ShowStdfPTR()
         }
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfMPR()
@@ -1254,7 +1242,7 @@ void StdfDialog::ShowStdfMPR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
     ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"TEST_NUM";
@@ -1287,7 +1275,6 @@ void StdfDialog::ShowStdfMPR()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        ui->RecordTableWidget->insertRow(i);
         StdfMPR* record = (StdfMPR*)(stdf_file->get_record(MPR_TYPE, i));
 
         int col = 0;
@@ -1349,7 +1336,7 @@ void StdfDialog::ShowStdfMPR()
         progress_bar.setValue(i);
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfFTR()
@@ -1364,7 +1351,7 @@ void StdfDialog::ShowStdfFTR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 
-    ui->RecordTableWidget->setRowCount(0);
+    ui->RecordTableWidget->setRowCount(rec_count);
     ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"TEST_NUM";
@@ -1398,7 +1385,6 @@ void StdfDialog::ShowStdfFTR()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        ui->RecordTableWidget->insertRow(i);
         StdfFTR* record = (StdfFTR*)(stdf_file->get_record(FTR_TYPE, i));
 
         int col = 0;
@@ -1488,7 +1474,7 @@ void StdfDialog::ShowStdfFTR()
         progress_bar.setValue(i);
     }
 	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-	ui->RecordTableWidget->resizeColumnsToContents();
+    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfBPS()
@@ -1529,7 +1515,6 @@ void StdfDialog::ShowStdfEPS()
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
-        //StdfEPS* record = (StdfEPS*)(stdf_file->get_record(EPS_TYPE, i));
         int col = 0;
         table_set_value(i, col++, QString("EPS"));
     }

@@ -24,6 +24,23 @@
 
 QT_CHARTS_USE_NAMESPACE
 
+QString combine_label_number(const char* lable, unsigned int number)
+{
+    QString str_lable = QString::fromLocal8Bit(lable);
+    QString str_number;
+    str_number.sprintf("%u", number);
+    QString lable_number = str_number + QString("@") + str_lable;
+    return lable_number;
+}
+
+unsigned int get_number_from_combine(QString label_number)
+{
+    QStringList split_list= label_number.split('@');
+    QString str_number = split_list[0];
+    unsigned int number = (unsigned int)(str_number.toInt());
+    return number;
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -44,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mMaxHistoGroupCount = 99;
     mMinHistoGroupCount = 13;
     mGRR_Mode = 0;
+    mCorr_Mode = 0;
 
     mGrr = new TestSite_GRR();
     mCorr = new TestSite_CORR();
@@ -457,8 +475,11 @@ unsigned int MainWindow::GetSelectedSites()
         for(unsigned int i = 0; i < item_count; i++)
         {
             TestItem* test_item = first_site->get_item(i);
-            QString item_label = QString::fromLocal8Bit(test_item->get_label());
-            ui->TestItemListWidget->addItem(item_label);
+            //QString item_label = QString::fromLocal8Bit(test_item->get_label());
+            //ui->TestItemListWidget->addItem(item_label);
+
+            QString label_number = combine_label_number(test_item->get_label(), test_item->get_number());
+            ui->TestItemListWidget->addItem(label_number);
         }
     }
     return count;
@@ -470,7 +491,8 @@ unsigned int MainWindow::GetSelectedItems()
     QListWidgetItem* row_item = ui->TestItemListWidget->currentItem();
     if(row_item == NULL) return count;
 
-    QString item_label = row_item->text();
+    QString item_label_str = row_item->text();
+    unsigned int item_number = get_number_from_combine(item_label_str);
 
     mSeclectItemInfoList.clear();
     unsigned int site_count = mSelectedSiteList.size();
@@ -478,14 +500,20 @@ unsigned int MainWindow::GetSelectedItems()
     for(unsigned int s = 0; s < site_count; s++)
     {
         TestSite* site = mSelectedSiteList[s];
-        TestItem* item = site->get_item_by_label(item_label.toLocal8Bit().data());
+        //TestItem* item = site->get_item_by_label(item_label.toLocal8Bit().data());
+        TestItem* item = site->get_item_by_number(item_number);
         if(item)
         {
-            TestItemInfo item_info;
-            item_info.item = item;
-            item_info.site_index = s;
-            mSeclectItemInfoList.push_back(item_info);
-            count++;
+            QString label_number = combine_label_number(item->get_label(), item_number);
+            if(label_number != item_label_str) continue;
+            else
+            {
+                TestItemInfo item_info;
+                item_info.item = item;
+                item_info.site_index = s;
+                mSeclectItemInfoList.push_back(item_info);
+                count++;
+            }
         }
     }
     return count;
@@ -1733,7 +1761,7 @@ void MainWindow::on_ScatterPlotButton_clicked()
 void MainWindow::on_AboutAction_triggered()
 {
     QString title = QObject::tr("About");
-    QString message = QObject::tr("------ Version 3.1.0.2 -------\n");
+    QString message = QObject::tr("------ Version 4.0.0.0 -------\n");
     message += QObject::tr("-- This Software is Free of Charge, \n");
     message += QObject::tr("   Unlicensed and comes with No Warranty.");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
@@ -1778,6 +1806,8 @@ void MainWindow::on_UpdateInfoAction_triggered()
 	message  += QObject::tr("- 2019.05.20 When no Limits, Set Result Pass.\n");
     message  += QObject::tr("- 2019.05.25 Add the TCS(Test Capability Study). \n");
     message  += QObject::tr("- 2019.06.11 Add ANOVA Method for GRR Calculation. \n");
+    message  += QObject::tr("- 2019.06.15 Add new Method for SPC constans Calculation. \n");
+    message  += QObject::tr("- 2019.06.17 Add the Test Number for Distinguish the Same Test Labels. \n");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
     msgDlg.exec();
 }
