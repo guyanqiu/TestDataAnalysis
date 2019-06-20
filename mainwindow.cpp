@@ -7,7 +7,7 @@
 #include "widgets/chartsettingdialog.h"
 #include "widgets/calsettingdialog.h"
 #include "widgets/convertfiledialog.h"
-#include "stdfreader//stdfdialog.h"
+#include "stdfreader/stdfdialog.h"
 #include "wafermap/wafermapdialog.h"
 #include "scatterplot/scatterplotdialog.h"
 
@@ -420,16 +420,21 @@ void MainWindow::OpenDataLogFiles()
     QString title = tr("Open DataLog File");
     QString default_dir = tr("");
 
-    //QString filter = tr("STDF V4 File (*.stdf *.std*);;ETS LOG File (*.log);;PowTech CSV File(*.csv"));
-    QStringList filters;
-    filters << tr("STDF V4 Files (*.stdf *.std)")
-            << tr("ETS LOG Files (*.log)")
-            << tr("PowTech CSV Files (*.csv)")
-            << tr("PowTech TXT Files (*.txt)");
 
     QFileDialog *file_dialog = new QFileDialog(this, title, default_dir);
-    file_dialog->setNameFilters(filters);
+
     file_dialog->setFileMode(QFileDialog::ExistingFiles);
+    QString filter = tr("Data Log File(*.stdf *.std *.log *.csv *.txt *.xls)");
+    file_dialog->setNameFilter(filter);
+
+//    QStringList filters;
+//    filters << tr("STDF V4 Files (*.stdf *.std)")
+//            << tr("ETS LOG Files (*.log)")
+//            << tr("PowTech CSV Files (*.csv)")
+//            << tr("PowTech TAB Seprator Files (*.xls)")
+//            << tr("PowTech TXT Files (*.txt)");
+//    file_dialog->setNameFilters(filters);
+
     if(file_dialog->exec() == QDialog::Accepted)
     {
          QStringList filenames_list = file_dialog->selectedFiles();
@@ -1761,7 +1766,7 @@ void MainWindow::on_ScatterPlotButton_clicked()
 void MainWindow::on_AboutAction_triggered()
 {
     QString title = QObject::tr("About");
-    QString message = QObject::tr("------ Version 4.0.0.0 -------\n");
+    QString message = QObject::tr("------ Version 4.0.0.1 -------\n");
     message += QObject::tr("-- This Software is Free of Charge, \n");
     message += QObject::tr("   Unlicensed and comes with No Warranty.");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
@@ -1808,6 +1813,7 @@ void MainWindow::on_UpdateInfoAction_triggered()
     message  += QObject::tr("- 2019.06.11 Add ANOVA Method for GRR Calculation. \n");
     message  += QObject::tr("- 2019.06.15 Add new Method for SPC constans Calculation. \n");
     message  += QObject::tr("- 2019.06.17 Add the Test Number for Distinguish the Same Test Labels. \n");
+	message  += QObject::tr("- 2019.06.20 Support the Powertech TAB Separator file format partially\n");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
     msgDlg.exec();
 }

@@ -5,8 +5,13 @@
 #include <cstring>
 #include <cstdlib>
 #include <algorithm>
-//#include <QtGlobal>
-//#include <map>
+#include <map>
+//#define _DEBUG_FOR_DEBUG_
+#ifdef _DEBUG_FOR_DEBUG_
+#define dprintf(msg, ...)      { printf( msg,  ##__VA_ARGS__ );}
+#else
+#define dprintf(msg, ...)
+#endif
 
 /********************  Define for Log File *******************************/
 #define LOG_FILE_MARK       120     // The First Line of Log File
@@ -38,6 +43,93 @@
 
 
 //////////////////////////////////////////////////////////////////////////
+
+static double convert_units(const std::string& exit_unit,const std::string& new_unit, bool& need_convert)
+{
+    if(exit_unit == new_unit)
+    {
+        need_convert = false;
+        return 1.0;
+    }
+
+    std::map<std::string, double> Unit_Convert_Ratio;
+    std::map<std::string, double>::iterator it;
+    Unit_Convert_Ratio["u"] = 1.0e-6;
+    Unit_Convert_Ratio["m"] = 1.0e-3;
+    Unit_Convert_Ratio["n"] = 1.0e-9;
+    Unit_Convert_Ratio["p"] = 1.0e-12;
+    Unit_Convert_Ratio["f"] = 1.0e-15;
+    Unit_Convert_Ratio["k"] = 1.0e3;
+    Unit_Convert_Ratio["M"] = 1.0e6;
+    Unit_Convert_Ratio["G"] = 1.0e9;
+
+    int exit_length = exit_unit.length();
+    int new_length = new_unit.length();
+
+    if(exit_length > new_length)
+    {
+        std::size_t found = exit_unit.find(new_unit);
+        if(found != std::string::npos)
+        {
+            std::string prefix_unit = exit_unit.substr(0, found);
+            it = Unit_Convert_Ratio.find(prefix_unit);
+            if(it != Unit_Convert_Ratio.end())
+            {
+                need_convert = true;
+                return 1.0/Unit_Convert_Ratio[prefix_unit];
+            }
+        }
+        else
+        {
+            need_convert = false;
+            return 1.0;
+        }
+    }
+
+    if(new_length > exit_length)
+    {
+        std::size_t found = new_unit.find(exit_unit);
+        if(found != std::string::npos)
+        {
+            std::string prefix_unit = new_unit.substr(0, found);
+            it = Unit_Convert_Ratio.find(prefix_unit);
+            if(it != Unit_Convert_Ratio.end())
+            {
+                need_convert = true;
+                return Unit_Convert_Ratio[prefix_unit];
+            }
+        }
+        else
+        {
+            need_convert = false;
+            return 1.0;
+        }
+    }
+
+    if(new_length == exit_length)
+    {
+        double ratio_new = 1.0;
+        double ratio_exit = 1.0;
+        std::string prefix_new = new_unit.substr(0, 1);
+        it = Unit_Convert_Ratio.find(prefix_new);
+        if(it != Unit_Convert_Ratio.end())
+        {
+            std::string prefix_exit = exit_unit.substr(0, 1);
+            it = Unit_Convert_Ratio.find(prefix_exit);
+            {
+                need_convert = true;
+                ratio_new = Unit_Convert_Ratio[prefix_new];
+                ratio_exit = Unit_Convert_Ratio[prefix_exit];
+                return  ratio_exit/ratio_new;
+            }
+        }
+    }
+
+    need_convert = false;
+    return 1.0;
+}
+
+
 TestItemImpl::TestItemImpl()
 {
 	TestNumber = 0;
@@ -222,7 +314,6 @@ void TestItemImpl::AddResultAndFlag( TestResult& result )
 	}
 	else
 	{
-        //result.set_flag(RESULT_TESTED);
         result.set_flag(RESULT_PASS);
 	}
 	AddResult(result);
@@ -1152,6 +1243,8 @@ DataLogType DataLogImpl::GetFileTypeBySuffix(const char* filename)
 		type = CSV_FILE;
     else if(suffix == std::string(".txt"))
         type = TXT_FILE;
+    else if(suffix == std::string(".xls"))
+        type = TAB_FILE;
 	else
 		type = OTHER_FILE;
 
@@ -1643,9 +1736,7 @@ DataLogError DataLogImpl::ReadFromCSV(const char* filename)
 	}
 	in.close();
 	delete hold_items_site;
-	if(SiteList.size() == 0)
-		return NO_DATA_TO_READ;
-    //SetName(filename);
+    if(SiteList.size() == 0) return NO_DATA_TO_READ;
     HBin_For_All_Sites = false;
     SBin_For_All_Sites = false;
     return DATALOG_OPERATE_OK;
@@ -1654,10 +1745,10 @@ DataLogError DataLogImpl::ReadFromCSV(const char* filename)
 DataLogError DataLogImpl::ReadFromTXT(const char* filename)
 {
     const std::string start_str = "Datalog for Serial#";
+    const std::string pass_str = "PASSED";
     std::ifstream in(filename, std::ios::in);
     if(!in) return READ_FILE_ERROR;
 
-    CSVLine line;
     TestSite *current_site = nullptr;
     while(in.good() && !in.eof())
     {
@@ -1667,6 +1758,9 @@ DataLogError DataLogImpl::ReadFromTXT(const char* filename)
         {
             unsigned pos_comma = current_line.find(',');
             std::string serial_index_str = current_line.substr(21, pos_comma - 21);
+
+            TestFlag result_flag = RESULT_FAIL;
+            if(current_line.find(pass_str) != std::string::npos) result_flag = RESULT_PASS;
 
             std::string rest_line = current_line.substr(pos_comma + 1);
             unsigned pos_pound = rest_line.find('#');
@@ -1705,7 +1799,8 @@ DataLogError DataLogImpl::ReadFromTXT(const char* filename)
             while(in.good() && !in.eof())
             {
                 std::getline(in, current_line);
-                if(current_line.length() < 5) break;
+                int length = current_line.length();
+                if(length < 5) break;
                 std::string item_number_str = current_line.substr(0, 6);
                 std::string result_str = current_line.substr(7, 9);
                 TestItem* item = current_site->get_item_by_itemnumber(item_number_str.c_str());
@@ -1715,7 +1810,14 @@ DataLogError DataLogImpl::ReadFromTXT(const char* filename)
                     std::string item_units_str = current_line.substr(17, 5);
                     std::string item_lower_str = current_line.substr(23, 9);
                     std::string item_upper_str = current_line.substr(33, 9);
-                    std::string item_label_str = current_line.substr(49, 49);
+                    std::string item_label_str = current_line.substr(49, length-49);
+
+                    std::size_t fount_not_space = item_units_str.find_first_not_of(' ');
+                    if(fount_not_space != std::string::npos)
+                    {
+                        std::string item_units_str2 =item_units_str.substr(fount_not_space);
+                        item->set_unit(item_units_str2.c_str());
+                    }
 
                     std::size_t found_h = item_upper_str.find_first_of("+-0123456789.");
                     if(found_h != std::string::npos) item->set_highlimit(std::atof(item_upper_str.c_str()));
@@ -1724,22 +1826,20 @@ DataLogError DataLogImpl::ReadFromTXT(const char* filename)
                     if(found_l != std::string::npos) item->set_lowlimit(std::atof(item_lower_str.c_str()));
 
                     item->set_label(item_label_str.c_str());
-                    item->set_unit(item_units_str.c_str());
                     item->set_itemnumber(item_number_str.c_str());
                     current_site->add_item_by_itemnumber(item);
                 }
                 TestResult result;
-                result.set_flag(RESULT_TESTED);
+                result.set_flag(result_flag);
                 result.set_value(std::atof(result_str.c_str()));
                 result.set_index(current_site->get_device_count());
-                //item->add_result(result);
-                item->add_result_flag(result);
+                item->add_result(result);
+                //item->add_result_flag(result);
             }
         }
     }
     in.close();
-    if(SiteList.size() == 0)
-        return NO_DATA_TO_READ;
+    if(SiteList.size() == 0) return NO_DATA_TO_READ;
     HBin_For_All_Sites = false;
     SBin_For_All_Sites = false;
     for(unsigned int i = 0; i < SiteList.size(); i++)
@@ -1766,6 +1866,7 @@ DataLogError DataLogImpl::ReadDataLog(const char* filename)
 	case LOG_FILE: return ReadFromLog(filename);
 	case CSV_FILE: return ReadFromCSV(filename);
     case TXT_FILE: return ReadFromTXT(filename);
+    case TAB_FILE: return ReadFromTabXLS(filename);
 	default: return FILE_FORMATE_ERROR;
 	}
 }
@@ -1930,8 +2031,6 @@ DataLogError DataLogImpl::WriteSummaryToCSV(const char* filename)
             }
         }
         out<<"\n\n";
-
-
         out<<"\n\n";
     }
 
@@ -2043,3 +2142,487 @@ bool DataLogImpl::IsHBinForAllSites()
 }
 
 //////////////////////////////////////////////////////////////////////////
+
+DataLogError DataLogImpl::ReadFromTabXLS(const char* filename)
+{
+    std::ifstream in(filename, std::ios::in);
+	if(!in) return READ_FILE_ERROR;
+
+	CSVLine line;
+	bool is_strict = false;
+	const char seprator = '\t';
+	const char* company ="PowerTECH";
+	const char* max_limit_str = "Max Limit";
+	const char* min_limit_str = "Min Limit";
+	const char* low_limit_str = "Lower Limit";
+	const char* upper_limit_str = "Upper Limit";
+	const char* units_str = "Units";
+	const char* label_begin_str = "Result:";
+	const char* item_name_str = "Item Name";
+	const char* test_name_str = "Test Name";
+	const char* datalog_begin_str = "Serial#";
+	const char* number_digits = "0123456789";
+	const char* sbin_str = "S#";
+	const char* hbin_str = "Bin#";
+	const char* xcoord_str = "XCoord";
+	//const char* ycoord_str = "YCoord";
+	const char* site_str = "Site #";
+
+	// Check first line contain the company name
+	if((in.good() && !in.eof()))
+    {
+        const char* a_line = line.read_line(in, is_strict);
+		const char* find_str = std::strstr(a_line, company);
+		if(find_str == NULL)
+        {
+            in.close();
+            return FILE_FORMATE_ERROR;
+        }
+    }
+
+	CSVParser parser;
+
+	unsigned int data_start_index = 0;
+	unsigned int sbin_index = 2;
+	unsigned int hbin_index = 3;
+	unsigned int xcoord_index = 4;
+	unsigned int ycoord_index = 5;
+	unsigned int site_number_index = 1;
+
+	TestSite* hold_items_site = new TestSite();
+	hold_items_site->set_number(1);
+	bool reach_test_name = false;
+	bool reach_data_value = false;
+	bool reach_min_limit = false;
+	bool reach_max_limit = false;
+	bool reach_item_name = false;
+	bool has_coord_value = false;
+	bool has_site_number = false;
+	bool has_units_line = false;
+
+	unsigned int device_index = 0;
+	std::string min_limits;
+	std::string max_limits;
+	std::string all_labels;
+	std::string all_units;
+
+	while(in.good() && !in.eof())
+	{
+		const char* a_line = line.read_line(in, is_strict);
+		if(!a_line || std::strlen(a_line) == 0) continue;
+
+		if(!reach_min_limit)
+		{
+            unsigned int count = parser.parse(a_line, seprator);
+			if(count == 0) continue;
+			const char *temp_string = parser.get_string(0);
+			const char *find_min_limit = std::strstr(temp_string, min_limit_str);
+			if(!find_min_limit) find_min_limit = std::strstr(temp_string, low_limit_str);
+            if(find_min_limit)
+            {
+                // Low Limits
+                reach_min_limit = true;
+                min_limits.assign(a_line);
+                dprintf("min limit ok\n");
+                //continue;
+            }
+		}
+
+		if(!reach_max_limit)
+		{
+            unsigned int count = parser.parse(a_line, seprator);
+			if(count == 0) continue;
+			const char *temp_string = parser.get_string(0);
+			const char *find_max_limit = std::strstr(temp_string, max_limit_str);
+			if(!find_max_limit) find_max_limit = std::strstr(temp_string, upper_limit_str);
+            if(find_max_limit)
+            {
+                // High Limits
+                reach_max_limit = true;
+                max_limits.assign(a_line);
+                dprintf("max limit ok\n");
+                //continue;
+            }
+		}
+
+		if(!has_units_line)
+        {
+            unsigned int count = parser.parse(a_line, seprator);
+			if(count == 0) continue;
+			const char *temp_str = parser.get_string(0);
+			const char *find_units = std::strstr(temp_str, units_str);
+            if(find_units)
+            {
+                // set units
+                has_units_line = true;
+                all_units.assign(a_line);
+                dprintf("all_units ok: %s\n", a_line);
+                //continue;
+            }
+        }
+
+		if(!reach_test_name)
+		{
+			unsigned int count = parser.parse(a_line, seprator);
+			if(count == 0) continue;
+			const char *test_name = parser.get_string(0);
+			const char *find_labels = std::strstr(test_name, label_begin_str);
+			if(!find_labels)
+            {
+                if(std::strcmp(test_name, "Result") == 0)
+                {
+                    reach_test_name = true;
+                    reach_item_name = true;
+                    all_labels.assign(a_line);
+                    dprintf("Reach Result ok: %s\n", a_line);
+                }
+            }
+            if(find_labels)
+            {
+                // set labels
+                reach_test_name = true;
+                reach_item_name = true;
+                all_labels.assign(a_line);
+                dprintf("all_labels ok: %s\n", a_line);
+                //continue;
+            }
+		}
+
+		if(!reach_item_name)
+		{
+            unsigned int count = parser.parse(a_line, seprator);
+			if(count == 0) continue;
+			const char *item_name = parser.get_string(0);
+			const char *find_labels = std::strstr(item_name, item_name_str);
+			if(!find_labels) find_labels = std::strstr(item_name, test_name_str);
+            if(find_labels && (count > 3))
+            {
+                unsigned int check_begin = 1;
+                for(unsigned int mm = 1; mm < count; mm++)
+                {
+                    const char* temp_check = parser.get_string(mm);
+                    if(std::strlen(temp_check) > 1)
+                    {
+                        check_begin = mm;
+                        break;
+                    }
+                }
+
+                bool check_have_all_items = true;
+                for(unsigned int mm = check_begin; mm < count; mm++)
+                {
+                    const char* temp_check = parser.get_string(mm);
+                    if(std::strlen(temp_check) <= 1)
+                    {
+                        check_have_all_items = false;
+                        break;
+                    }
+                }
+
+                if(check_have_all_items)
+                {
+                    // set labels
+                    reach_test_name = true;
+                    reach_item_name = true;
+                    all_labels.assign(a_line);
+                    dprintf("all_labels ok: %s\n", a_line);
+                }
+                //continue;
+            }
+		}
+
+
+		if(reach_item_name && (!reach_data_value) )
+		{
+			unsigned int count = parser.parse(a_line, seprator);
+			if(count == 0) continue;
+			const char *temp = parser.get_string(0);
+            const char *find_data_begin = std::strstr(temp, datalog_begin_str);
+            if(!find_data_begin)
+            {
+                find_data_begin = std::strstr(temp, site_str);
+                if(find_data_begin)
+                {
+                    has_site_number = true;
+                    site_number_index = 0;
+                }
+            }
+			if(find_data_begin)
+			{
+                reach_data_value = true;
+                dprintf("find data begin: %s\n", a_line);
+
+                // must have Serial#	S#	Bin#
+                int all_labels_length = all_labels.length();
+                if(count < 3 || all_labels_length < 3)
+                {
+                    in.close();
+                    delete hold_items_site;
+                    dprintf("find data begin error\n");
+                    return FILE_FORMATE_ERROR;
+                }
+
+                for(unsigned int i = 1; i < count; i++)
+                {
+                    temp = parser.get_string(i);
+                    const char *find_xcoord = std::strstr(temp, xcoord_str);
+                    if(find_xcoord)
+                    {
+                        xcoord_index = i;
+                        dprintf("xcoord_index=%u\n", xcoord_index);
+                        has_coord_value = true;
+                        break;
+                    }
+                }
+
+                // set SBin column index
+                for(unsigned int i = 1; i < count; i++)
+                {
+                    temp = parser.get_string(i);
+                    const char *find_sbin = std::strstr(temp, sbin_str);
+                    if(find_sbin)
+                    {
+                        sbin_index = i;
+                        dprintf("sbin_index=%u\n", sbin_index);
+                        break;
+                    }
+                }
+
+                // set HBin column index
+                for(unsigned int i = 1; i < count; i++)
+                {
+                    temp = parser.get_string(i);
+                    const char* find_hbin = std::strstr(temp, hbin_str);
+                    if(find_hbin)
+                    {
+                        hbin_index = i;
+                        dprintf("hbin_index=%u\n", hbin_index);
+                        break;
+                    }
+                }
+
+                // parset the test label and set the TestItem
+                CSVParser parser_items, parser_low_limit, parser_high_limit, parser_units;
+                unsigned int count_items = parser_items.parse(all_labels.c_str(), seprator);
+                unsigned int count_low_limit = parser_low_limit.parse(min_limits.c_str(), seprator);
+                unsigned int count_hihg_limit = parser_high_limit.parse(max_limits.c_str(), seprator);
+                unsigned int count_units = 0;
+                if(has_units_line) count_units = parser_units.parse(all_units.c_str(), seprator);
+
+                // set the data start column index
+                for(unsigned int m = 1; m < count_items; m++)
+                {
+                    if(std::strlen(parser_items.get_string(m)) > 1)
+                    {
+                        data_start_index = m;
+                        dprintf("data_start_index=%u\n", data_start_index);
+                        break;
+                    }
+                }
+
+                unsigned int test_number = 0;
+
+                for(unsigned int m = data_start_index; m < count_items; m++)
+                {
+                    std::string current_high_limit_str, current_low_limit_str;
+                    TestItem * item = new TestItem();
+                    const char* label = parser_items.get_string(m);
+                    dprintf("current lable is %s\n", label);
+                    std::string  label_string = std::string(label);
+                    std::size_t found_space = label_string.find_first_of(' ');
+                    if(found_space != std::string::npos)
+                    {
+                        std::string test_number_str = label_string.substr(0, found_space);
+                        test_number = (unsigned int)( std::atoi(test_number_str.c_str()) );
+
+                        std::size_t found_bracket = label_string.find_last_of('(');
+                        std::string new_babel;
+                        if(found_space != std::string::npos)
+                        {
+                            new_babel = label_string.substr(found_space+1, found_bracket-found_space-1);
+                        }
+                        else
+                        {
+                            new_babel = label_string.substr(found_space+1);
+                        }
+
+                        item->set_label(new_babel.c_str());
+                        item->set_number(test_number);
+
+                    }
+                    else
+                    {
+                        test_number++;
+                        item->set_label(label);
+                        item->set_number(test_number);
+                    }
+
+                    // set low first
+                    if(m < count_low_limit)
+                    {
+                        const char* temp_low = parser_low_limit.get_string(m);
+                        std::string temp_low_str = std::string(temp_low);
+                        unsigned int length = temp_low_str.length();
+                        if(length > 0)
+                        {
+                            std::size_t found = temp_low_str.find_last_of(number_digits);
+                            std::string low_str = temp_low_str.substr(0, found+1);
+                            double low_limit = std::atof(low_str.c_str());
+                            item->set_lowlimit(low_limit);
+                            if(found < length-1)
+                            {
+                                std::string units = temp_low_str.substr(found+1);
+                                current_low_limit_str = units;
+                                item->set_unit(units.c_str());
+                            }
+                        }
+                    }
+
+                    // set high overwrite
+                    if(m < count_hihg_limit)
+                    {
+                        const char* temp_high = parser_high_limit.get_string(m);
+                        std::string temp_high_str = std::string(temp_high);
+                        unsigned int length = temp_high_str.length();
+                        if(length > 0)
+                        {
+                            std::size_t found = temp_high_str.find_last_of(number_digits);
+                            std::string high_str = temp_high_str.substr(0, found+1);
+                            double high_limit = std::atof(high_str.c_str());
+                            dprintf("temp_high=%s, found=%u, high_str=%s\n",temp_high,found, high_str.c_str());
+                            item->set_highlimit(high_limit);
+                            if(found < length-1)
+                            {
+                                std::string units = temp_high_str.substr(found+1);
+                                current_high_limit_str = units;
+                                item->set_unit(units.c_str());
+                            }
+                        }
+                    }
+
+
+                    // overwrite unit again
+                    if(has_units_line)
+                    {
+                        if(m < count_units)
+                        {
+                            const char* temp_unit = parser_units.get_string(m);
+                            const char* exit_unit = item->get_unit();
+                            if(exit_unit)
+                            {
+                                bool need_convert_low = false;
+                                double convert_ratio_low = convert_units(temp_unit, current_low_limit_str, need_convert_low);
+                                if(need_convert_low)
+                                {
+                                    if(item->lowlimit_valid()) item->set_lowlimit(convert_ratio_low * item->get_lowlimit());
+                                }
+
+                                bool need_convert_hihg = false;
+                                double convert_ratio_high = convert_units(temp_unit, current_high_limit_str, need_convert_hihg);
+                                if(need_convert_hihg)
+                                {
+                                    if(item->highlimit_valid()) item->set_highlimit(convert_ratio_high * item->get_highlimit());
+                                }
+                            }
+
+                            item->set_unit(temp_unit);
+                        }
+                    }
+
+                    hold_items_site->add_item(item);
+                }
+                continue;
+			}
+		}
+
+		// Read data
+		if(reach_data_value)
+		{
+            //a_line = line.read_line(in, is_strict);
+			unsigned int count = parser.parse(a_line, seprator);
+			if(count == 0) break;
+
+			TestSite *current_site = nullptr;
+			unsigned int site_number = 1;
+			if(has_site_number)
+            {
+                const char *str_site_number = parser.get_string(site_number_index);
+                site_number = (unsigned int)std::atoi(str_site_number);
+            }
+
+            current_site = GetSiteByNumber(site_number);
+            if(!current_site)
+            {
+                current_site = CreateNewSite(hold_items_site, site_number);
+            }
+
+
+			unsigned int item_count = current_site->get_item_count();
+			unsigned int vindex = data_start_index;
+			device_index = current_site->get_device_count();
+			for(unsigned int i = 0; i < item_count; i++)
+			{
+				TestItem* vitem = current_site->get_item(i);
+				const char* str_value = parser.get_string(vindex);
+				if(!str_value || std::strlen(str_value) == 0)
+				{
+					vindex++;
+					if(vindex == count) break;
+					continue;
+				}
+
+				unsigned int result_count = vitem->get_result_count();
+				if(result_count == 0)
+				{
+                    std::string str_value_unit(str_value);
+                    unsigned int found = str_value_unit.find_last_of(number_digits);
+                    if(found < str_value_unit.length()-1)
+                    {
+                        std::string str_unit = str_value_unit.substr(found+1);
+                        vitem->set_unit(str_unit.c_str());
+                    }
+				}
+
+				TestResult result;
+				result.set_flag(RESULT_TESTED);
+				result.set_index(device_index+1);
+				result.set_value(std::atof(str_value));
+				vitem->add_result_flag(result);
+
+				vindex++;
+				if(vindex == count) break;
+			}
+			TestDevice device;
+			const char* str_sbin_number = parser.get_string(sbin_index);
+			const char* str_hbin_number = parser.get_string(hbin_index);
+			unsigned short sbin_number = (unsigned short)std::atoi(str_sbin_number);
+			unsigned short hbin_number = (unsigned short)std::atoi(str_hbin_number);
+
+			if(has_coord_value)
+            {
+                ycoord_index = xcoord_index + 1;
+                const char* temp_xcoord_str = parser.get_string(xcoord_index);
+                const char* temp_ycoord_str = parser.get_string(ycoord_index);
+                short xcoord = (short)std::atoi(temp_xcoord_str);
+                short ycoord = (short)std::atoi(temp_ycoord_str);
+                device.set_xcoord(xcoord);
+                device.set_ycoord(ycoord);
+            }
+
+			device.set_hardbin(hbin_number);
+			device.set_softbin(sbin_number);
+
+			current_site->add_device(device);
+
+			current_site->add_hardbin_bynumber(hbin_number);
+			current_site->add_softbin_bynumber(sbin_number);
+		}
+	}
+	in.close();
+	delete hold_items_site;
+    if(SiteList.size() == 0) return NO_DATA_TO_READ;
+
+    HBin_For_All_Sites = false;
+    SBin_For_All_Sites = false;
+    return DATALOG_OPERATE_OK;
+}

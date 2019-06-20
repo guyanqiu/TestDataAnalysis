@@ -6,8 +6,8 @@
 IDI_ICON1 ICON DISCARDABLE "TestDataAnalysis.ico"
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,0
- PRODUCTVERSION 4,0,0,0
+ FILEVERSION 4,0,0,1
+ PRODUCTVERSION 4,0,0,1
  FILEFLAGSMASK 0x3FL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -22,14 +22,14 @@ BEGIN
     BEGIN
         BLOCK "080404b0"
         BEGIN
-            VALUE "CompanyName", "Çï¸çÖÆ×÷"
+            VALUE "CompanyName", "guyanqiu@qq.com"
             VALUE "FileDescription", "A Simple DataLog Analysis Program"
-            VALUE "FileVersion", "4.0.0.0"
+            VALUE "FileVersion", "4.0.0.1"
             VALUE "InternalName", "TestDataAnalysis"
             VALUE "LegalCopyright", "Copyright (C) 2015-2019"
             VALUE "OriginalFilename", "TestDataAnalysis.exe"
             VALUE "ProductName", "TestDataAnalysis"
-            VALUE "ProductVersion", "4.0.0.0"
+            VALUE "ProductVersion", "4.0.0.1"
         END
     END
     BLOCK "VarFileInfo"

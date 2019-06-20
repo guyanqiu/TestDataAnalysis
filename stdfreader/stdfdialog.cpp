@@ -55,15 +55,13 @@ StdfDialog::~StdfDialog()
 
 void StdfDialog::table_set_value(int row, int col, unsigned int value)
 {
-    QString str_number;
-    str_number.sprintf("%u", value);
+    QString str_number = QString("%1").arg(value);
     ui->RecordTableWidget->setItem(row, col, new QTableWidgetItem(str_number));
 }
 
 void StdfDialog::table_set_value(int row, int col, int value)
 {
-    QString str_number;
-    str_number.sprintf("%d", value);
+    QString str_number = QString("%1").arg(value);
     ui->RecordTableWidget->setItem(row, col, new QTableWidgetItem(str_number));
 }
 
@@ -81,43 +79,37 @@ void StdfDialog::table_set_value(int row, int col, time_t value)
 
 void StdfDialog::table_set_value(int row, int col, char value)
 {
-    QString str_number;
-    str_number.sprintf("%c", value);
+    QString str_number = QString(QChar(value));
     ui->RecordTableWidget->setItem(row, col, new QTableWidgetItem(str_number));
 }
 
 void StdfDialog::table_set_value(int row, int col, unsigned char value)
 {
-    QString str_number;
-    str_number.sprintf("%u", value);
+    QString str_number = QString("%1").arg(value);
     ui->RecordTableWidget->setItem(row, col, new QTableWidgetItem(str_number));
 }
 
 void StdfDialog::table_set_value(int row, int col, unsigned short value)
 {
-    QString str_number;
-    str_number.sprintf("%u", value);
+    QString str_number = QString("%1").arg(value);
     ui->RecordTableWidget->setItem(row, col, new QTableWidgetItem(str_number));
 }
 
 void StdfDialog::table_set_value(int row, int col, float value)
 {
-    QString str_number;
-    str_number.sprintf("%f", value);
+    QString str_number = QString("%1").arg(value);
     ui->RecordTableWidget->setItem(row, col, new QTableWidgetItem(str_number));
 }
 
 void StdfDialog::table_set_value(int row, int col, short value)
 {
-    QString str_number;
-    str_number.sprintf("%d", value);
+    QString str_number = QString("%1").arg(value);
     ui->RecordTableWidget->setItem(row, col, new QTableWidgetItem(str_number));
 }
 
 void StdfDialog::table_set_value(int row, int col, signed char value)
 {
-    QString str_number;
-    str_number.sprintf("%d", value);
+    QString str_number = QString("%1").arg(value);
     ui->RecordTableWidget->setItem(row, col, new QTableWidgetItem(str_number));
 }
 
@@ -128,8 +120,9 @@ void StdfDialog::table_set_value(int row, int col, QString value)
 
 void StdfDialog::table_set_flag(int row, int col, unsigned char flag)
 {
-    QString str_flag;
-    str_flag.sprintf("0x%X", flag);
+//    QString str_flag;
+//    str_flag.sprintf("0x%X", flag);
+    QString str_flag = QString("%1").arg(flag, 0, 16);
     ui->RecordTableWidget->setItem(row, col, new QTableWidgetItem(str_flag));
 }
 
@@ -293,13 +286,13 @@ void StdfDialog::ShowStdfFAR()
 
     col_labels<<"CPU_TYPE";
     col_labels<<"STDF_VER";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
     
 	StdfFAR* record = (StdfFAR*)(stdf_file->get_record(FAR_TYPE, 0));
 
     table_set_value(0, 0, record->get_cpu_type());     // CPU_TYPE
     table_set_value(0, 1, record->get_stdf_version()); // STDF_VER
 	
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -320,6 +313,7 @@ void StdfDialog::ShowStdfATR()
 	
 	col_labels<<"SETUP_T";
     col_labels<<"CMD_LINE";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -330,8 +324,7 @@ void StdfDialog::ShowStdfATR()
 
         progress_bar.setValue(i);
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-    //ui->RecordTableWidget->resizeColumnsToContents();
+    ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfMIR()
@@ -382,7 +375,7 @@ void StdfDialog::ShowStdfMIR()
 	col_labels<<"ROM_COD ";
 	col_labels<<"SERL_NUM";
 	col_labels<<"SUPR_NAM";
-	
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
     
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -428,7 +421,6 @@ void StdfDialog::ShowStdfMIR()
         table_set_value(i, col++, record->get_tester_number());     // SERL_NUM
         table_set_value(i, col++, record->get_supervisor_name());   // SUPR_NAM
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -446,6 +438,7 @@ void StdfDialog::ShowStdfMRR()
     col_labels<<"DISP_COD";
 	col_labels<<"USR_DESC";
 	col_labels<<"EXC_DESC";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -457,7 +450,6 @@ void StdfDialog::ShowStdfMRR()
         table_set_value(i, col++, record->get_user_discription()); // USR_DESC
         table_set_value(i, col++, record->get_exec_discription()); // EXC_DESC
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -478,6 +470,7 @@ void StdfDialog::ShowStdfPCR()
 	col_labels<<"ABRT_CNT";
 	col_labels<<"GOOD_CNT";
 	col_labels<<"FUNC_CNT";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -492,7 +485,6 @@ void StdfDialog::ShowStdfPCR()
         table_set_value(i, col++, record->get_passed_count());   // GOOD_CNT
         table_set_value(i, col++, record->get_func_test_count());// FUNC_CNT
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -510,6 +502,7 @@ void StdfDialog::ShowStdfHBR()
 
     ui->RecordTableWidget->setRowCount(rec_count);
     ui->RecordTableWidget->setColumnCount(col_count);
+
 	
 	col_labels<<"HEAD_NUM";
     col_labels<<"SITE_NUM";
@@ -517,6 +510,7 @@ void StdfDialog::ShowStdfHBR()
 	col_labels<<"HBIN_CNT";
 	col_labels<<"HBIN_PF";
 	col_labels<<"HBIN_NAM";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -532,8 +526,7 @@ void StdfDialog::ShowStdfHBR()
 
         progress_bar.setValue(i);
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-    //ui->RecordTableWidget->resizeColumnsToContents();
+    ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfSBR()
@@ -557,6 +550,7 @@ void StdfDialog::ShowStdfSBR()
 	col_labels<<"SBIN_CNT";
 	col_labels<<"SBIN_PF";
 	col_labels<<"SBIN_NAM";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -572,8 +566,7 @@ void StdfDialog::ShowStdfSBR()
 
         progress_bar.setValue(i);
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-    //ui->RecordTableWidget->resizeColumnsToContents();
+    ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfPMR()
@@ -593,6 +586,7 @@ void StdfDialog::ShowStdfPMR()
 	col_labels<<"LOG_NAM";
 	col_labels<<"HEAD_NUM";
 	col_labels<<"SITE_NUM";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -607,7 +601,6 @@ void StdfDialog::ShowStdfPMR()
         table_set_value(i, col++, record->get_head_number());   // HEAD_NUM
         table_set_value(i, col++, record->get_site_number());   // SITE_NUM
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -625,6 +618,7 @@ void StdfDialog::ShowStdfPGR()
     col_labels<<"GRP_NAM ";
     col_labels<<"INDX_CNT";
     col_labels<<"PMR_INDX";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -646,7 +640,6 @@ void StdfDialog::ShowStdfPGR()
         table_set_value(i, col++, pin_count);                // INDX_CNT
         table_set_value(i, col++, pin_number_list);          // PMR_INDX
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -668,6 +661,7 @@ void StdfDialog::ShowStdfPLR()
 	col_labels<<"RTN_CHAR";
 	col_labels<<"PGM_CHAL";
 	col_labels<<"RTN_CHAL";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -745,7 +739,6 @@ void StdfDialog::ShowStdfPLR()
         table_set_value(i, col++, program_state_left_list);  // PGM_CHAL
         table_set_value(i, col++, return_state_left_list);   // RTN_CHAL
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -761,6 +754,7 @@ void StdfDialog::ShowStdfRDR()
 	
 	col_labels<<"NUM_BINS";
     col_labels<<"RTST_BIN";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -780,7 +774,6 @@ void StdfDialog::ShowStdfRDR()
         table_set_value(i, col++, bin_count);        // NUM_BINS
         table_set_value(i, col++, bin_number_list);  // RTST_BIN
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -814,6 +807,7 @@ void StdfDialog::ShowStdfSDR()
 	col_labels<<"LASR_ID ";
 	col_labels<<"EXTR_TYP";
 	col_labels<<"EXTR_ID ";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -851,7 +845,6 @@ void StdfDialog::ShowStdfSDR()
         table_set_value(i, col++, record->get_equipment_type());     // EXTR_TYP
         table_set_value(i, col++, record->get_equipment_id());       // EXTR_ID
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -874,6 +867,7 @@ void StdfDialog::ShowStdfWIR()
     col_labels<<"SITE_GRP";
 	col_labels<<"START_T";
 	col_labels<<"WAFER_ID";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -886,7 +880,6 @@ void StdfDialog::ShowStdfWIR()
         table_set_value(i, col++, record->get_wafer_id());    // WAFER_ID
         progress_bar.setValue(i);
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
     //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -919,6 +912,7 @@ void StdfDialog::ShowStdfWRR()
 	col_labels<<"MASK_ID";
 	col_labels<<"USR_DESC";
 	col_labels<<"EXC_DESC";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -941,7 +935,6 @@ void StdfDialog::ShowStdfWRR()
         table_set_value(i, col++, record->get_exec_discription());// EXC_DESC
         progress_bar.setValue(i);
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
     //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -964,6 +957,7 @@ void StdfDialog::ShowStdfWCR()
 	col_labels<<"CENTER_Y";
 	col_labels<<"POS_X";
 	col_labels<<"POS_Y";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -991,7 +985,6 @@ void StdfDialog::ShowStdfWCR()
         table_set_value(i, col++, record->get_positive_x()); // POS_X
         table_set_value(i, col++, record->get_positive_y()); // POS_Y
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -1012,6 +1005,7 @@ void StdfDialog::ShowStdfPIR()
 	
 	col_labels<<"HEAD_NUM";
     col_labels<<"SITE_NUM";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -1022,7 +1016,6 @@ void StdfDialog::ShowStdfPIR()
         table_set_value(i, col++, record->get_site_number()); // SITE_NUM
         progress_bar.setValue(i);
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
     //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -1052,6 +1045,7 @@ void StdfDialog::ShowStdfPRR()
 	col_labels<<"TEST_T(MS)";
     col_labels<<"PART_ID";
 	col_labels<<"PART_TXT";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -1071,7 +1065,6 @@ void StdfDialog::ShowStdfPRR()
         table_set_value(i, col++, record->get_part_discription());      // PART_TXT
         progress_bar.setValue(i);
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
     //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -1106,6 +1099,7 @@ void StdfDialog::ShowStdfTSR()
 	col_labels<<"TEST_MAX";
 	col_labels<<"TST_SUMS";
 	col_labels<<"TST_SQRS";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -1131,7 +1125,6 @@ void StdfDialog::ShowStdfTSR()
 
         progress_bar.setValue(i);
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
     //ui->RecordTableWidget->resizeColumnsToContents();
 }
 void StdfDialog::ShowStdfPTR()
@@ -1146,10 +1139,9 @@ void StdfDialog::ShowStdfPTR()
     progress_bar.setAlignment(Qt::AlignCenter);
     progress_bar.show();
 	
-
 	ui->RecordTableWidget->setColumnCount(col_count);
     ui->RecordTableWidget->setRowCount(rec_count);
-	
+
     col_labels<<"Part ID";
 	col_labels<<"TEST_NUM";
 	col_labels<<"HEAD_NUM";
@@ -1171,6 +1163,7 @@ void StdfDialog::ShowStdfPTR()
 	col_labels<<"C_HLMFMT";
 	col_labels<<"LO_SPEC";
 	col_labels<<"HI_SPEC";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     unsigned int record_count = stdf_file->get_total_count();
     unsigned int index_count  = 0;
@@ -1215,8 +1208,8 @@ void StdfDialog::ShowStdfPTR()
                 table_set_value(index_count, col++, record->get_low_spec());             // LO_SPEC
                 table_set_value(index_count, col++, record->get_high_spec());            // HI_SPEC
 
-                progress_bar.setValue(index_count);
                 index_count++;
+                progress_bar.setValue(index_count);
             }
             continue;
         }
@@ -1226,8 +1219,6 @@ void StdfDialog::ShowStdfPTR()
             continue;
         }
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
-    //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
 void StdfDialog::ShowStdfMPR()
@@ -1272,6 +1263,7 @@ void StdfDialog::ShowStdfMPR()
 	col_labels<<"C_HLMFMT";
 	col_labels<<"LO_SPEC";
 	col_labels<<"HI_SPEC";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -1335,7 +1327,6 @@ void StdfDialog::ShowStdfMPR()
         table_set_value(i, col++, record->get_high_spec());          // HI_SPEC
         progress_bar.setValue(i);
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
     //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -1382,6 +1373,7 @@ void StdfDialog::ShowStdfFTR()
 	col_labels<<"RSLT_TXT";
 	col_labels<<"PATG_NUM";
 	col_labels<<"SPIN_MAP";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -1473,7 +1465,6 @@ void StdfDialog::ShowStdfFTR()
 
         progress_bar.setValue(i);
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
     //ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -1488,6 +1479,7 @@ void StdfDialog::ShowStdfBPS()
 	ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"SEQ_NAME";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -1497,7 +1489,6 @@ void StdfDialog::ShowStdfBPS()
         table_set_value(i, col++, record->get_section_name()); // SEQ_NAME
 
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -1512,13 +1503,14 @@ void StdfDialog::ShowStdfEPS()
 	ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"EPS";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
         int col = 0;
         table_set_value(i, col++, QString("EPS"));
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
+
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -1534,6 +1526,7 @@ void StdfDialog::ShowStdfGDR()
 	
 	col_labels<<"FLD_CNT";
     col_labels<<"GEN_DATA";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -1543,7 +1536,7 @@ void StdfDialog::ShowStdfGDR()
         table_set_value(i, col++, record->get_data_count()); // FLD_CNT
         table_set_value(i, col++, QString("Not Parse."));    // GEN_DATA
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
+
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 
@@ -1558,6 +1551,7 @@ void StdfDialog::ShowStdfDTR()
 	ui->RecordTableWidget->setColumnCount(col_count);
 	
 	col_labels<<"TEXT_DAT";
+    ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
 
     for(unsigned int i = 0; i < rec_count; i++)
     {
@@ -1567,7 +1561,7 @@ void StdfDialog::ShowStdfDTR()
         table_set_value(i, col++, record->get_text_data()); // TEXT_DAT
 
     }
-	ui->RecordTableWidget->setHorizontalHeaderLabels(col_labels);
+
 	ui->RecordTableWidget->resizeColumnsToContents();
 }
 

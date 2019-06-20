@@ -14,6 +14,7 @@ enum DataLogType : int
     LOG_FILE = 1,
     CSV_FILE = 2,
     TXT_FILE = 3,
+    TAB_FILE = 4,
     OTHER_FILE = -1,
 };
 
@@ -183,6 +184,8 @@ private:
     DataLogError ReadFromLog(const char* filename);
     DataLogError ReadFromCSV(const char* filename);
     DataLogError ReadFromTXT(const char* filename);
+    DataLogError ReadFromTabXLS(const char* filename);
+
     void SetSiteList(const StdfSDR& sdr);
     void SetItemValue(TestItem* item, const StdfPTR& ptr);
     void SetItemValue(TestItem* item, CSVParser& parser, unsigned int test_number);
