@@ -24,7 +24,24 @@
 
 QT_CHARTS_USE_NAMESPACE
 
-QString combine_label_number(const char* lable, unsigned int number)
+static double normdist_cdf(double z)
+{
+    return 0.5 + 0.5 * erf(z / M_SQRT2);
+}
+
+static double normdist_pdf(double x1, double x2)
+{
+    return fabs(normdist_cdf(x1) - normdist_cdf(x2));
+}
+
+static double get_normdist(double x, double delta)
+{
+    double x1 = x + delta;
+    double x2 = x - delta;
+    return normdist_pdf(x1, x2);
+}
+
+static QString combine_label_number(const char* lable, unsigned int number)
 {
     QString str_lable = QString::fromLocal8Bit(lable);
     QString str_number;
@@ -33,13 +50,15 @@ QString combine_label_number(const char* lable, unsigned int number)
     return lable_number;
 }
 
-unsigned int get_number_from_combine(QString label_number)
+static unsigned int get_number_from_combine(QString label_number)
 {
     QStringList split_list= label_number.split('@');
     QString str_number = split_list[0];
     unsigned int number = (unsigned int)(str_number.toInt());
     return number;
 }
+
+///////////////////////////////////////////////////////////////////////////
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -67,12 +86,16 @@ MainWindow::MainWindow(QWidget *parent) :
     mCorr = new TestSite_CORR();
     mChart = new QChart(nullptr);
 
-
     ui->ChartPlotWidget->setRenderHint(QPainter::Antialiasing);
     ui->ChartPlotWidget->setRubberBand(QChartView::RectangleRubberBand);
     ui->ChartPlotWidget->setChart(mChart);
+//    ui->ChartPlotWidget->setTransformationAnchor(QChartView::AnchorUnderMouse);
+//    ui->ChartPlotWidget->setResizeAnchor(QChartView::AnchorUnderMouse);
 
+    QFont font;
+    font.setWeight(QFont::Black);
     xy_lable.setParent(ui->ChartPlotWidget);
+    xy_lable.setFont(font);
     xy_lable.hide();
 }
 
@@ -180,7 +203,6 @@ void MainWindow::SetNewItemIndex(int max_count)
          ui->TestItemListWidget->setCurrentRow(mItemSelectedIndex);
     }
 }
-
 
 void MainWindow::on_TestSiteListWidget_itemChanged(QListWidgetItem *item)
 {
@@ -420,20 +442,19 @@ void MainWindow::OpenDataLogFiles()
     QString title = tr("Open DataLog File");
     QString default_dir = tr("");
 
-
     QFileDialog *file_dialog = new QFileDialog(this, title, default_dir);
 
     file_dialog->setFileMode(QFileDialog::ExistingFiles);
-    QString filter = tr("Data Log File(*.stdf *.std *.log *.csv *.txt *.xls)");
-    file_dialog->setNameFilter(filter);
+//    QString filter = tr("Data Log File(*.stdf *.std *.log *.csv *.txt *.xls)");
+//    file_dialog->setNameFilter(filter);
 
-//    QStringList filters;
-//    filters << tr("STDF V4 Files (*.stdf *.std)")
-//            << tr("ETS LOG Files (*.log)")
-//            << tr("PowTech CSV Files (*.csv)")
-//            << tr("PowTech TAB Seprator Files (*.xls)")
-//            << tr("PowTech TXT Files (*.txt)");
-//    file_dialog->setNameFilters(filters);
+    QStringList filters;
+    filters << tr("STDF V4 Files (*.stdf *.std)")
+            << tr("ETS LOG Files (*.log)")
+            << tr("PowTech CSV Files (*.csv)")
+            << tr("PowTech TAB Seprator Files (*.xls)")
+            << tr("PowTech TXT Files (*.txt)");
+    file_dialog->setNameFilters(filters);
 
     if(file_dialog->exec() == QDialog::Accepted)
     {
@@ -585,6 +606,7 @@ unsigned int MainWindow::PlotLineChart()
     axisX->setTitleText(tr("#Index"));
     axisX->setGridLineVisible(true);
 
+
     QValueAxis *axisY = new QValueAxis;
     axisY->setTitleText(item_label);
     axisY->setLabelFormat("%.6f");
@@ -616,17 +638,18 @@ unsigned int MainWindow::PlotLineChart()
             if(max_result < max_temp) max_result = max_temp;
         }
 
-        QLineSeries *series=new QLineSeries;
-        connect(series, &QLineSeries::hovered, this, &on_slotPointHoverd);
-
+        QLineSeries *series_line = new QLineSeries;
+        QList<QPointF> points;
         for(unsigned int n = 0; n < result_count; n++)
         {
             TestResult result = item->get_result(n);
-            series->append(result.get_index(), result.get_value());
+            points.append(QPointF(result.get_index(), result.get_value()));
         }
+
+        series_line->append(points);
         QString site_name = QString::fromLocal8Bit(site->get_name());
-        series->setName(site_name);
-        mChart->addSeries(series);
+        series_line->setName(site_name);
+        mChart->addSeries(series_line);
 
         QPen pen;
         pen.setWidth(3);
@@ -635,12 +658,28 @@ unsigned int MainWindow::PlotLineChart()
         int rand3 = i % 2 + 1;
         QColor color(15 * rand1 , 63 * rand2 , 127 * rand3);
         pen.setColor(color);
-        series->setPen(pen);
-        mChart->setAxisX(axisX, series);
-        mChart->setAxisY(axisY, series);
-    }
+        series_line->setPen(pen);
 
-    axisY->setRange(min_result, max_result);
+        mChart->setAxisX(axisX, series_line);
+        mChart->setAxisY(axisY, series_line);
+
+        if(mChartType == LineChart)
+        {
+            QScatterSeries *series_scatter = new QScatterSeries;
+            series_scatter->setMarkerSize(5.0);
+            connect(series_scatter, &QScatterSeries::hovered, this, &on_slotPointHoverd);
+            series_scatter->append(points);
+            series_scatter->setPen(pen);
+            mChart->addSeries(series_scatter);
+            mChart->setAxisX(axisX, series_scatter);
+            mChart->setAxisY(axisY, series_scatter);
+
+            QLegend* legend = mChart->legend();
+            QList<QLegendMarker *> marker_list = legend->markers(series_scatter);
+            for(int mm = 0; mm < marker_list.size(); mm++) marker_list[mm]->setVisible(false);
+        }
+    }
+    axisY->setRange(min_result-0.05*fabs(min_result), max_result+0.05*fabs(max_result));
     mChart->legend()->show();
 
     return max_device_count;
@@ -650,9 +689,9 @@ void MainWindow::on_slotPointHoverd(const QPointF &point, bool state)
 {
     if (state)
     {
-        xy_lable.setText(QString::asprintf("(%f,%f)", point.x(),point.y()));
+        xy_lable.setText(QString::asprintf("(%.0f,%f)", point.x(),point.y()));
         QPoint curPos = mapFromGlobal(QCursor::pos());
-        xy_lable.move(curPos.x()-xy_lable.width()*1.9 , curPos.y()-xy_lable.height()*2.9);
+        xy_lable.move(curPos.x()-xy_lable.width()*2.5 , curPos.y()-xy_lable.height()*2.9);
         xy_lable.show();
     }
     else
@@ -730,7 +769,30 @@ void MainWindow::PlotHistoChart(unsigned int min_step, unsigned int max_step)
         TestItem* item = item_info.item;
         TestSite* site = mSelectedSiteList[item_info.site_index];
 
-        QBarSet *set = new QBarSet(QString::fromLocal8Bit(site->get_name()));
+        if(i == 0)
+        {
+            XTestLable = QString::fromLocal8Bit(item->get_label());
+			const char* chr_unit = item->get_unit();
+            if(chr_unit)
+            {
+                QString str_unit = QString::fromLocal8Bit(chr_unit);
+                XTestLable = XTestLable + QString("(") + str_unit + QString(")");
+            }
+            axisY->setTitleText(XTestLable);
+        }
+
+        QList<qreal> group_counts;
+        for(unsigned int m = 0; m < group_count; m++)
+        {
+            double low_threshold = min_value + (m - 0.5) * step_value;
+            double high_threshold = min_value + (m + 0.5) * step_value;
+            unsigned int count = MyHistogram::GetIntervalCount(item, low_threshold, high_threshold);
+
+            if(count > MaxCount) MaxCount = count;
+            group_counts.append(count);
+
+        }
+
         QPen pen;
         pen.setWidthF(2.0);
         int rand1 = i % 16 + 1;
@@ -740,25 +802,11 @@ void MainWindow::PlotHistoChart(unsigned int min_step, unsigned int max_step)
         pen.setColor(color);
         QColor new_color = color;
         new_color.setAlpha(127);
+
+        QBarSet *set = new QBarSet(QString::fromLocal8Bit(site->get_name()));
         set->setPen(pen);
         set->setBrush(new_color);
-
-        if(i == 0)
-        {
-            XTestLable = QString::fromLocal8Bit(item->get_label());
-            axisY->setTitleText(XTestLable);
-        }
-
-        for(unsigned int m = 0; m < group_count; m++)
-        {
-            double low_threshold = min_value + (m - 0.5) * step_value;
-            double high_threshold = min_value + (m + 0.5) * step_value;
-            unsigned int count = MyHistogram::GetIntervalCount(item, low_threshold, high_threshold);
-
-            if(count > MaxCount) MaxCount = count;
-            set->append(count);
-        }
-
+        set->append(group_counts);
         bars->append(set);
 
         double avearge_value = item->get_average();
@@ -771,7 +819,6 @@ void MainWindow::PlotHistoChart(unsigned int min_step, unsigned int max_step)
         pen_mean.setColor(color.darker());
 
         QLineSeries *series_mean=new QLineSeries;
-        //series_mean->setName("Avg");
         series_mean->setPen(pen_mean);
         series_mean->append(mean_x, 0);
         series_mean->append(mean_x, MaxCount*1.05);
@@ -779,20 +826,22 @@ void MainWindow::PlotHistoChart(unsigned int min_step, unsigned int max_step)
         mChart->setAxisX(axisX, series_mean);
         mChart->setAxisY(axisY, series_mean);
 
-        QLineSeries *series_stdev=new QLineSeries;
-        //series_stdev->setName("Std");
+        QLegend* legend = mChart->legend();
+        QList<QLegendMarker *> marker_list = legend->markers(series_mean);
+        for(int mm = 0; mm < marker_list.size(); mm++) marker_list[mm]->setVisible(false);
+
+        QList<QPointF> sigma_points;
         double stdev_value = item->get_stdev();
         if(stdev_value != 0 )
         {
-            double Xsigma[13] = {-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5,3.0};
-            double Ysigma[13] = {0.00240274,0.00924471,0.02783468,0.06559062,0.12097758,0.17466632,
-                 0.19741265,0.17466632,0.12097758,0.06559062,0.02783468,0.00924471,0.00240274}; // +/-3Sigma Percent.
-            double Peak = 0.19741265;
-            for(int s = 0; s < 13; s++)
+            double delta = 0.125;
+            double Peak = get_normdist(0, delta);
+            for(double s = -3; s <= 3.0 + delta; s = s + delta*2.0)
             {
-                double x_sigma = mean_x + Xsigma[s] * stdev_value;
-                double y_max_count = MaxCount * Ysigma[s] / Peak;
-                series_stdev->append(x_sigma, y_max_count);
+			    double temp_sigma = get_normdist(s, delta);
+                double x_sigma = mean_x + s * stdev_value;
+                double y_max_count = MaxCount * temp_sigma / Peak;
+                sigma_points.append(QPointF(x_sigma, y_max_count));
                 if(y_max_count > max_count_total) max_count_total = y_max_count;
                 if(max_count_total < MaxCount) max_count_total = MaxCount;
             }
@@ -801,10 +850,16 @@ void MainWindow::PlotHistoChart(unsigned int min_step, unsigned int max_step)
             pen_stdev.setWidth(line_width);
             pen_stdev.setColor(color.dark());
 
+            QLineSeries *series_stdev=new QLineSeries;
+            series_stdev->append(sigma_points);
             series_stdev->setPen(pen_stdev);
             mChart->addSeries(series_stdev);
             mChart->setAxisX(axisX, series_stdev);
             mChart->setAxisY(axisY, series_stdev);
+
+            legend = mChart->legend();
+            marker_list = legend->markers(series_stdev);
+            for(int mm = 0; mm < marker_list.size(); mm++) marker_list[mm]->setVisible(false);
         }
     }
 
@@ -1766,7 +1821,7 @@ void MainWindow::on_ScatterPlotButton_clicked()
 void MainWindow::on_AboutAction_triggered()
 {
     QString title = QObject::tr("About");
-    QString message = QObject::tr("------ Version 4.0.0.1 -------\n");
+    QString message = QObject::tr("------ Version 4.1.0.0 -------\n");
     message += QObject::tr("-- This Software is Free of Charge, \n");
     message += QObject::tr("   Unlicensed and comes with No Warranty.");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
@@ -1814,6 +1869,7 @@ void MainWindow::on_UpdateInfoAction_triggered()
     message  += QObject::tr("- 2019.06.15 Add new Method for SPC constans Calculation. \n");
     message  += QObject::tr("- 2019.06.17 Add the Test Number for Distinguish the Same Test Labels. \n");
 	message  += QObject::tr("- 2019.06.20 Support the Powertech TAB Separator file format partially\n");
+    message  += QObject::tr("- 2019.06.24 Optimized the code for chart plot\n");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
     msgDlg.exec();
 }

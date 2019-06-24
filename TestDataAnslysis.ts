@@ -353,7 +353,7 @@
     </message>
     <message>
         <location filename="mainwindow.ui" line="390"/>
-        <location filename="mainwindow.cpp" line="1655"/>
+        <location filename="mainwindow.cpp" line="1710"/>
         <source>Convert DataLog to Summary</source>
         <translation>从DataLog生成统计Summary信息</translation>
     </message>
@@ -363,567 +363,575 @@
         <translation>显示晶圆图</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="221"/>
+        <location filename="mainwindow.cpp" line="243"/>
         <source>No Plot to Save</source>
         <translation>没有图表需要保存</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="221"/>
+        <location filename="mainwindow.cpp" line="243"/>
         <source>No Data in Plot, No Plot to Save.</source>
         <translation>没有数据生成图表，没有图表需要保存。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="226"/>
+        <location filename="mainwindow.cpp" line="248"/>
         <source>Save PNG File</source>
         <translation>保存图片文件</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="227"/>
+        <location filename="mainwindow.cpp" line="249"/>
         <source>PNG Files(*.png)</source>
         <translation>图片文件(*.png)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="237"/>
+        <location filename="mainwindow.cpp" line="259"/>
         <source>Save Chart Success</source>
         <translation>保存成功</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="237"/>
+        <location filename="mainwindow.cpp" line="259"/>
         <source>Save Chart to PNG File Success.</source>
         <translation>成功将图表保存到PNG文件中。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="241"/>
+        <location filename="mainwindow.cpp" line="263"/>
         <source>Save Chart Failure</source>
         <translation>保存失败</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="241"/>
+        <location filename="mainwindow.cpp" line="263"/>
         <source>Save Chart to PNG File Failure.</source>
         <translation>保存图表失败，原因未知。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="350"/>
+        <location filename="mainwindow.cpp" line="372"/>
         <source>Save PowerTECH CSV File</source>
         <translation>保存PowerTECH格式的CSV文件</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="351"/>
-        <location filename="mainwindow.cpp" line="1666"/>
+        <location filename="mainwindow.cpp" line="373"/>
+        <location filename="mainwindow.cpp" line="1721"/>
         <source>CSV Files(*.csv)</source>
         <translation>CSV文件(*.csv)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="360"/>
-        <location filename="mainwindow.cpp" line="1675"/>
+        <location filename="mainwindow.cpp" line="382"/>
+        <location filename="mainwindow.cpp" line="1730"/>
         <source>Save File Success</source>
         <translation>保存成功</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="360"/>
+        <location filename="mainwindow.cpp" line="382"/>
         <source>Save Test Datas to CSV File Success.</source>
         <translation>成功将测试数据保存到CSV文件中。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="420"/>
+        <location filename="mainwindow.cpp" line="442"/>
         <source>Open DataLog File</source>
         <translation>打开DataLog文件</translation>
     </message>
     <message>
+        <location filename="mainwindow.cpp" line="452"/>
         <source>STDF V4 Files (*.stdf *.std)</source>
-        <translation type="vanished">STDF文件(*.stdf *.std)</translation>
+        <translation>STDF文件(*.stdf *.std)</translation>
     </message>
     <message>
+        <location filename="mainwindow.cpp" line="453"/>
         <source>ETS LOG Files (*.log)</source>
-        <translation type="vanished">ETS LOG文件(*.log)</translation>
+        <translation>ETS LOG文件(*.log)</translation>
     </message>
     <message>
+        <location filename="mainwindow.cpp" line="454"/>
         <source>PowTech CSV Files (*.csv)</source>
-        <translation type="vanished">PowerTECH CSV文件(*.csv)</translation>
+        <translation>PowerTECH CSV文件(*.csv)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="461"/>
+        <location filename="mainwindow.cpp" line="455"/>
+        <source>PowTech TAB Seprator Files (*.xls)</source>
+        <translation>PowerTECH TAB分隔文件(*.xls)</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="456"/>
+        <source>PowTech TXT Files (*.txt)</source>
+        <translation>PowerTECH TXT文件(*.txt)</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="482"/>
         <source>Site Count Error</source>
         <translation>Site数目错误</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="462"/>
+        <location filename="mainwindow.cpp" line="483"/>
         <source>Read Site Count != Show Site Count. Clear the Files and Reload.</source>
         <translation>读取的Site数目与显示的Site数目不一致，清除文件并重新加载试试。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="609"/>
-        <location filename="mainwindow.cpp" line="945"/>
+        <location filename="mainwindow.cpp" line="631"/>
+        <location filename="mainwindow.cpp" line="1000"/>
         <source>(Unit: %1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="585"/>
+        <location filename="mainwindow.cpp" line="606"/>
         <source>#Index</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="427"/>
-        <source>Data Log File(*.stdf *.std *.log *.csv *.txt *.xls</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="985"/>
+        <location filename="mainwindow.cpp" line="1040"/>
         <source>Read DataLog Success</source>
         <translation>读取DataLog成功</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="985"/>
+        <location filename="mainwindow.cpp" line="1040"/>
         <source>Read Test Data From DataLog File Success.</source>
         <translation>成功从DataLog中读取测试数据。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="988"/>
+        <location filename="mainwindow.cpp" line="1043"/>
         <source>Read File Error</source>
         <translation>读取文件失败</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="988"/>
+        <location filename="mainwindow.cpp" line="1043"/>
         <source>Read Test Data From DataLog File Failure.</source>
         <translation>从DataLog中读取测试数据失败，原因未知。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="991"/>
+        <location filename="mainwindow.cpp" line="1046"/>
         <source>Write File Error</source>
         <translation>写文件错误</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="991"/>
+        <location filename="mainwindow.cpp" line="1046"/>
         <source>Write Test Data To File Failure.</source>
         <translation>向文件中写入测试数据失败，原因未知。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="994"/>
-        <location filename="mainwindow.cpp" line="997"/>
-        <location filename="mainwindow.cpp" line="1000"/>
-        <location filename="mainwindow.cpp" line="1003"/>
-        <location filename="mainwindow.cpp" line="1006"/>
+        <location filename="mainwindow.cpp" line="1049"/>
+        <location filename="mainwindow.cpp" line="1052"/>
+        <location filename="mainwindow.cpp" line="1055"/>
+        <location filename="mainwindow.cpp" line="1058"/>
+        <location filename="mainwindow.cpp" line="1061"/>
         <source>Error Message</source>
         <translation>报错信息</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="994"/>
+        <location filename="mainwindow.cpp" line="1049"/>
         <source>File Format not Support or File is broken.</source>
         <translation>不支持的文件格式，文件格式错误，或者文件已经损坏。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="997"/>
+        <location filename="mainwindow.cpp" line="1052"/>
         <source>This Program Only Support STDF V4.</source>
         <translation>STDF版本不支持，该程序只支持STDF V$。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1000"/>
+        <location filename="mainwindow.cpp" line="1055"/>
         <source>This Program Only Support STDF CPU Type = 2.</source>
         <translation>字节大小端顺序不支持，该程序只支持CPU Type=2。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1003"/>
+        <location filename="mainwindow.cpp" line="1058"/>
         <source>No Data in Site Need to Write..</source>
         <translation>Site中没有数据。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1006"/>
+        <location filename="mainwindow.cpp" line="1061"/>
         <source>No Data in File Need to Read. May File Format is Wrong.</source>
         <translation>在DataLog中读不到数据，也许文件格式不正确。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1009"/>
-        <location filename="mainwindow.cpp" line="1142"/>
-        <location filename="mainwindow.cpp" line="1568"/>
+        <location filename="mainwindow.cpp" line="1064"/>
+        <location filename="mainwindow.cpp" line="1197"/>
+        <location filename="mainwindow.cpp" line="1623"/>
         <source>Unknown Error</source>
         <translation>未知错误</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1009"/>
+        <location filename="mainwindow.cpp" line="1064"/>
         <source>An Unknown Error Occurs.</source>
         <translation>发生了错误，但是原因未知。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1024"/>
+        <location filename="mainwindow.cpp" line="1079"/>
         <source>Test Label</source>
         <translation>测试项</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1025"/>
+        <location filename="mainwindow.cpp" line="1080"/>
         <source>Test Unit</source>
         <translation>单位</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1026"/>
+        <location filename="mainwindow.cpp" line="1081"/>
         <source>Low Limit</source>
         <translation>下限</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1027"/>
+        <location filename="mainwindow.cpp" line="1082"/>
         <source>High Limit</source>
         <translation>上限</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1028"/>
-        <location filename="mainwindow.cpp" line="1368"/>
+        <location filename="mainwindow.cpp" line="1083"/>
+        <location filename="mainwindow.cpp" line="1423"/>
         <source>Average</source>
         <translation>平均值</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1029"/>
+        <location filename="mainwindow.cpp" line="1084"/>
         <source>Device Count</source>
         <translation>器件数</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1030"/>
+        <location filename="mainwindow.cpp" line="1085"/>
         <source>Min</source>
         <translation>最小值</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1031"/>
+        <location filename="mainwindow.cpp" line="1086"/>
         <source>Max</source>
         <translation>最大值</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1032"/>
-        <location filename="mainwindow.cpp" line="1369"/>
+        <location filename="mainwindow.cpp" line="1087"/>
+        <location filename="mainwindow.cpp" line="1424"/>
         <source>Range</source>
         <translation>全距（Max-Min）</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1033"/>
+        <location filename="mainwindow.cpp" line="1088"/>
         <source>Stdev</source>
         <translation>标准差</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1034"/>
-        <location filename="mainwindow.cpp" line="1371"/>
+        <location filename="mainwindow.cpp" line="1089"/>
+        <location filename="mainwindow.cpp" line="1426"/>
         <source>Cp</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1035"/>
-        <location filename="mainwindow.cpp" line="1372"/>
+        <location filename="mainwindow.cpp" line="1090"/>
+        <location filename="mainwindow.cpp" line="1427"/>
         <source>Cpk</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1106"/>
+        <location filename="mainwindow.cpp" line="1161"/>
         <source>GRR Calculate Success</source>
         <translation>GRR计算成功</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1106"/>
+        <location filename="mainwindow.cpp" line="1161"/>
         <source>Calculate GRR Success.</source>
         <translation>GRR计算完毕。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1109"/>
-        <location filename="mainwindow.cpp" line="1532"/>
+        <location filename="mainwindow.cpp" line="1164"/>
+        <location filename="mainwindow.cpp" line="1587"/>
         <source>Test Label Not Same</source>
         <translation>测试项标签不一致</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1109"/>
-        <location filename="mainwindow.cpp" line="1532"/>
+        <location filename="mainwindow.cpp" line="1164"/>
+        <location filename="mainwindow.cpp" line="1587"/>
         <source>Some TestItems TestLabel are Not Same. Continue?</source>
         <translation>某些Site的测试项标签不一致，是否继续？</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1112"/>
-        <location filename="mainwindow.cpp" line="1535"/>
+        <location filename="mainwindow.cpp" line="1167"/>
+        <location filename="mainwindow.cpp" line="1590"/>
         <source>Test Number Not Same</source>
         <translation>测试项序号不一致</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1112"/>
-        <location filename="mainwindow.cpp" line="1535"/>
+        <location filename="mainwindow.cpp" line="1167"/>
+        <location filename="mainwindow.cpp" line="1590"/>
         <source>Some TestItems TestNumber are Not Same. Continue?</source>
         <translation>某些Site的测试项序号不一致，是否继续？</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1115"/>
+        <location filename="mainwindow.cpp" line="1170"/>
         <source>TestNumber and TestLabel Not Same</source>
         <translation>测试项序号和测试项标签不一致</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1115"/>
+        <location filename="mainwindow.cpp" line="1170"/>
         <source>Some TestItems TestNumber and TestLabel are Not Same. Continue?</source>
         <translation>某些Site的测试项序号和测试项标签不一致，是否继续？</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1118"/>
+        <location filename="mainwindow.cpp" line="1173"/>
         <source>Test Data Count Not Same</source>
         <translation>测试数据个数不同</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1118"/>
+        <location filename="mainwindow.cpp" line="1173"/>
         <source>Some TestItems Test Times or Devices Count Not Same.</source>
         <translation>某些测试项的测试次数或者器件数目不同。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1121"/>
-        <location filename="mainwindow.cpp" line="1547"/>
+        <location filename="mainwindow.cpp" line="1176"/>
+        <location filename="mainwindow.cpp" line="1602"/>
         <source>TestItem Not Exist</source>
         <translation>测试项不存在</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1121"/>
+        <location filename="mainwindow.cpp" line="1176"/>
         <source>TestItem not in Some TestSites.</source>
         <translation>某些Site中有测试项没有测试。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1124"/>
+        <location filename="mainwindow.cpp" line="1179"/>
         <source>Test Data Count Too Few</source>
         <translation>测试数据太少</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1124"/>
+        <location filename="mainwindow.cpp" line="1179"/>
         <source>TestItem Test Times Need More Than Two.</source>
         <translation>每一个测试项至少需要2个测试数据。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1127"/>
+        <location filename="mainwindow.cpp" line="1182"/>
         <source>Test Data Not All Pass</source>
         <translation>有数据没有通过测试</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1127"/>
+        <location filename="mainwindow.cpp" line="1182"/>
         <source>Some TestItems not All Pass.</source>
         <translation>某些测试项的结果没有通过测试。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1130"/>
+        <location filename="mainwindow.cpp" line="1185"/>
         <source>TestSite Has No Data</source>
         <translation>Site没有数据</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1130"/>
+        <location filename="mainwindow.cpp" line="1185"/>
         <source>Some TestSite Has No Data.</source>
         <translation>某些Site没有数据。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1133"/>
-        <location filename="mainwindow.cpp" line="1559"/>
+        <location filename="mainwindow.cpp" line="1188"/>
+        <location filename="mainwindow.cpp" line="1614"/>
         <source>TestItem Count Not Same</source>
         <translation>测试项数目不相等</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1133"/>
-        <location filename="mainwindow.cpp" line="1559"/>
+        <location filename="mainwindow.cpp" line="1188"/>
+        <location filename="mainwindow.cpp" line="1614"/>
         <source>Some TestSite TestItem Count Not Same.</source>
         <translation>某些Site的测试项数目与其他Site不相同。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1136"/>
+        <location filename="mainwindow.cpp" line="1191"/>
         <source>TestSite Count Too Few</source>
         <translation>Site数目太少</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1136"/>
+        <location filename="mainwindow.cpp" line="1191"/>
         <source>GRR Calculate Need More Than Two.</source>
         <translation>GRR至少需要2个Site的数据才能进行计算。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1139"/>
+        <location filename="mainwindow.cpp" line="1194"/>
         <source>TestItem Not All Tested</source>
         <translation>有测试项未测试</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1139"/>
+        <location filename="mainwindow.cpp" line="1194"/>
         <source>TestItem Exist, But Not Test.</source>
         <translation>测试项标签存在，但是没有测试数据。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1142"/>
-        <location filename="mainwindow.cpp" line="1568"/>
+        <location filename="mainwindow.cpp" line="1197"/>
+        <location filename="mainwindow.cpp" line="1623"/>
         <source>An Unkonwn Error Occured.</source>
         <translation>发生未知错误，原因未知。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1153"/>
-        <location filename="mainwindow.cpp" line="1483"/>
+        <location filename="mainwindow.cpp" line="1208"/>
+        <location filename="mainwindow.cpp" line="1538"/>
         <source>Test Site too Less</source>
         <translation>Site数目太少</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1153"/>
+        <location filename="mainwindow.cpp" line="1208"/>
         <source>GRR calculating need more than two sites.</source>
         <translation>GRR至少需要2个Site的数据才能执行计算。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1363"/>
+        <location filename="mainwindow.cpp" line="1418"/>
         <source>Low Spec</source>
         <translation>规格下限</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1364"/>
+        <location filename="mainwindow.cpp" line="1419"/>
         <source>High Spec</source>
         <translation>规格上限</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1365"/>
+        <location filename="mainwindow.cpp" line="1420"/>
         <source>Unit</source>
         <translation>单位</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1366"/>
+        <location filename="mainwindow.cpp" line="1421"/>
         <source>Min.</source>
         <translation>最小值</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1367"/>
+        <location filename="mainwindow.cpp" line="1422"/>
         <source>Max.</source>
         <translation>最大值</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1370"/>
+        <location filename="mainwindow.cpp" line="1425"/>
         <source>Stedev</source>
         <translation>标准差</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1465"/>
-        <location filename="mainwindow.cpp" line="1476"/>
+        <location filename="mainwindow.cpp" line="1520"/>
+        <location filename="mainwindow.cpp" line="1531"/>
         <source>No Reference Site Select</source>
         <translation>没有选择参考Site</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1465"/>
+        <location filename="mainwindow.cpp" line="1520"/>
         <source>Must Select A Reference Site First.</source>
         <translation>请首先选择参考Site。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1476"/>
+        <location filename="mainwindow.cpp" line="1531"/>
         <source>Must Select A Reference Site First. Check it.</source>
         <translation>请首先选择一个参考Site，确认是否选择。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1483"/>
+        <location filename="mainwindow.cpp" line="1538"/>
         <source>Correlation calculating need more than two sites.</source>
         <translation>Correlation计算需要至少2个Site的数据。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1529"/>
+        <location filename="mainwindow.cpp" line="1584"/>
         <source>Correlation Calculate Success</source>
         <translation>Correlation计算成功</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1529"/>
+        <location filename="mainwindow.cpp" line="1584"/>
         <source>Calculate Correlation Success.</source>
         <translation>Correlation计算成功。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1538"/>
+        <location filename="mainwindow.cpp" line="1593"/>
         <source>Test Number And Label Not Same</source>
         <translation>测试项序号和测试项标签不一致</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1538"/>
+        <location filename="mainwindow.cpp" line="1593"/>
         <source>Some TestItems TestNumber &amp; TestLabel are Not Same. Continue?</source>
         <translation>某些Site的测试项序号和测试项标签与参考Site不一致，是否继续？</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1541"/>
+        <location filename="mainwindow.cpp" line="1596"/>
         <source>Test Result Not All Pass</source>
         <translation>测试结果没有全部通过测试</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1541"/>
+        <location filename="mainwindow.cpp" line="1596"/>
         <source>Some TestItems Results are Fail. Continue?</source>
         <translation>某些测试项的测试结果没有通过测试，是否继续？</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1544"/>
+        <location filename="mainwindow.cpp" line="1599"/>
         <source>Test Result Count Not Same</source>
         <translation>测试数据数目不同</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1544"/>
+        <location filename="mainwindow.cpp" line="1599"/>
         <source>Some TestItems TestTimes or Device Count Not Same. Continue?</source>
         <translation>某些测试项的测试次数或者器件数目不同，是否继续？</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1547"/>
+        <location filename="mainwindow.cpp" line="1602"/>
         <source>There is No TestItem in TestSite.</source>
         <translation>在Site中没有测试项。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1550"/>
+        <location filename="mainwindow.cpp" line="1605"/>
         <source>Device Count is Zero</source>
         <translation>器件数目为零</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1550"/>
+        <location filename="mainwindow.cpp" line="1605"/>
         <source>Device Count or TestTimes Must More Than One.</source>
         <translation>器件数目或者测试项的测试次数必须大于1.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1553"/>
+        <location filename="mainwindow.cpp" line="1608"/>
         <source>No reference Site</source>
         <translation>没有参考Site</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1553"/>
+        <location filename="mainwindow.cpp" line="1608"/>
         <source>Set Reference Site First.</source>
         <translation>请先设置参考Site。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1556"/>
+        <location filename="mainwindow.cpp" line="1611"/>
         <source>TestSite is NULL</source>
         <translation>Site指针为NULL</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1556"/>
+        <location filename="mainwindow.cpp" line="1611"/>
         <source>TestSite is NULL. Need Check The Program.</source>
         <translation>Site指针为NULL，该程序出现了Bug。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1562"/>
+        <location filename="mainwindow.cpp" line="1617"/>
         <source>Sites Too Few</source>
         <translation>Site数目太少</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1562"/>
+        <location filename="mainwindow.cpp" line="1617"/>
         <source>Calculate Correlation Need More Than Two Sites.</source>
         <translation>Correlation计算至少需要2个Site的数据。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1565"/>
+        <location filename="mainwindow.cpp" line="1620"/>
         <source>Not All TestItem Tested</source>
         <translation>有测试项未测试</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1565"/>
+        <location filename="mainwindow.cpp" line="1620"/>
         <source>Some TestItems are Not Tested.</source>
         <translation>某些测试项没有测试数据。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1600"/>
+        <location filename="mainwindow.cpp" line="1655"/>
         <source> Average</source>
         <translation>平均值</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1602"/>
+        <location filename="mainwindow.cpp" line="1657"/>
         <source>Delta Value</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1603"/>
+        <location filename="mainwindow.cpp" line="1658"/>
         <source>Correlation Value</source>
         <translation>Correlation结果</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1665"/>
+        <location filename="mainwindow.cpp" line="1720"/>
         <source>Save Summary CSV File</source>
         <translation>保存Summary到CSV文件</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1675"/>
+        <location filename="mainwindow.cpp" line="1730"/>
         <source>Save Summary to CSV File Success.</source>
         <translation>成功保存Summary到CSV文件。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1687"/>
+        <location filename="mainwindow.cpp" line="1742"/>
         <source>Select the Datalog to Show WaferMap</source>
         <translation>选择要显示晶圆图的DataLog</translation>
     </message>
@@ -931,267 +939,273 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="mainwindow.cpp" line="1768"/>
+        <location filename="mainwindow.cpp" line="1823"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1769"/>
-        <source>------ Version 4.0.0.1 -------
-</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1770"/>
+        <location filename="mainwindow.cpp" line="1825"/>
         <source>-- This Software is Free of Charge, 
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1771"/>
+        <location filename="mainwindow.cpp" line="1826"/>
         <source>   Unlicensed and comes with No Warranty.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1778"/>
+        <location filename="mainwindow.cpp" line="1833"/>
         <source>Update Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1779"/>
+        <location filename="mainwindow.cpp" line="1834"/>
         <source>- 2016.04.11 Create New DataLog Analysis Program
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1780"/>
+        <location filename="mainwindow.cpp" line="1835"/>
         <source>- 2016.04.12 Refactoring Codes of STDF Part
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1781"/>
+        <location filename="mainwindow.cpp" line="1836"/>
         <source>- 2016.04.13 Combine with STDF V4 Reader
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1782"/>
+        <location filename="mainwindow.cpp" line="1837"/>
         <source>- 2016.05.09 Bug Fixed By Init Zero Record Array
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1783"/>
+        <location filename="mainwindow.cpp" line="1838"/>
         <source>- 2016.06.07 Fixed STDF Record Write to File Error
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1784"/>
+        <location filename="mainwindow.cpp" line="1839"/>
         <source>- 2016.06.12 Add Translation of Simpled Chinese
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1785"/>
+        <location filename="mainwindow.cpp" line="1840"/>
         <source>- 2016.07.12 Adapt to PIR-PTR-PRR and PIR-PTRs-PRR
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1786"/>
+        <location filename="mainwindow.cpp" line="1841"/>
         <source>- 2016.08.03 Fiexd Correlation Calculation Sites Selected Error
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1787"/>
+        <location filename="mainwindow.cpp" line="1842"/>
         <source>- 2016.08.08 Ignore the All Commas Line in CSV
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1788"/>
+        <location filename="mainwindow.cpp" line="1843"/>
         <source>- 2016.08.29 Add Correlation Spec Setting
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1789"/>
+        <location filename="mainwindow.cpp" line="1844"/>
         <source>- 2016.09.02 Add X/Y Coordinate When Read CSV
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1790"/>
+        <location filename="mainwindow.cpp" line="1845"/>
         <source>- 2016.11.06 Add Simplied WaferMap Function
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1791"/>
+        <location filename="mainwindow.cpp" line="1846"/>
         <source>- 2017.01.12 Fixed STDF Reader MIR miss PROC_ID
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1792"/>
+        <location filename="mainwindow.cpp" line="1847"/>
         <source>- 2017.04.05 Fixed Correlation On once Test
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1793"/>
+        <location filename="mainwindow.cpp" line="1848"/>
         <source>- 2017.04.29 Add XLS Format for Data Saving
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1794"/>
+        <location filename="mainwindow.cpp" line="1849"/>
         <source>- 2017.05.02 Change Sites Selected Method
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1795"/>
+        <location filename="mainwindow.cpp" line="1850"/>
         <source>- 2017.05.04 Add Scatter Plot for TestItems in Same Site
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1796"/>
+        <location filename="mainwindow.cpp" line="1851"/>
         <source>- 2017.05.05 STDF Check can Save STDF to XLS
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1797"/>
+        <location filename="mainwindow.cpp" line="1852"/>
         <source>- 2017.05.12 Scatter Plot Add Correlation Coefficient
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1798"/>
+        <location filename="mainwindow.cpp" line="1853"/>
         <source>- 2017.06.01 Replace the QCustomPlot with QtCharts
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1804"/>
+        <location filename="mainwindow.cpp" line="1859"/>
         <source>- 2018.02.25 Add Statistical Box Plot
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1808"/>
+        <location filename="mainwindow.cpp" line="1863"/>
         <source>- 2018.10.30 Support the Powertech TXT file format
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1809"/>
+        <location filename="mainwindow.cpp" line="1864"/>
         <source>- 2018.11.27 Change XLS file to XLSX file format
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1810"/>
+        <location filename="mainwindow.cpp" line="1865"/>
         <source>- 2019.03.16 Show Data Value on the Line Chart
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1816"/>
+        <location filename="mainwindow.cpp" line="1871"/>
         <source>- 2019.06.20 Support the Powertech TAB Separator file format partially
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1799"/>
+        <location filename="mainwindow.cpp" line="1872"/>
+        <source>- 2019.06.24 Optimized the code for chart plot
+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="1854"/>
         <source>- 2017.06.21 Stdf Reader Add Save Table to CSV
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1800"/>
+        <location filename="mainwindow.cpp" line="1824"/>
+        <source>------ Version 4.1.0.0 -------
+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="1855"/>
         <source>- 2017.07.05 Update CSV Interface for DataLog Read
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1801"/>
+        <location filename="mainwindow.cpp" line="1856"/>
         <source>- 2017.07.19 Add Correlation Calculate Mode
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1802"/>
+        <location filename="mainwindow.cpp" line="1857"/>
         <source>- 2017.07.26 Refactoring the STDF Reader Codes
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1803"/>
+        <location filename="mainwindow.cpp" line="1858"/>
         <source>- 2017.07.27 Fixed STDF No SDR Site Name is Empty Error
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1805"/>
+        <location filename="mainwindow.cpp" line="1860"/>
         <source>- 2018.03.01 Stdf Check Add Part ID for PTR Records
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1806"/>
+        <location filename="mainwindow.cpp" line="1861"/>
         <source>- 2018.06.29 Update the Bin Description for Wafer Map
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1807"/>
+        <location filename="mainwindow.cpp" line="1862"/>
         <source>- 2018.10.24 Add All Sites Summary for Log File
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1811"/>
+        <location filename="mainwindow.cpp" line="1866"/>
         <source>- 2019.05.20 When no Limits, Set Result Pass.
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1812"/>
+        <location filename="mainwindow.cpp" line="1867"/>
         <source>- 2019.05.25 Add the TCS(Test Capability Study). 
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1813"/>
+        <location filename="mainwindow.cpp" line="1868"/>
         <source>- 2019.06.11 Add ANOVA Method for GRR Calculation. 
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1814"/>
+        <location filename="mainwindow.cpp" line="1869"/>
         <source>- 2019.06.15 Add new Method for SPC constans Calculation. 
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1815"/>
+        <location filename="mainwindow.cpp" line="1870"/>
         <source>- 2019.06.17 Add the Test Number for Distinguish the Same Test Labels. 
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1743"/>
+        <location filename="mainwindow.cpp" line="1798"/>
         <source>Select Site Number</source>
         <translation>选择Site序号</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1743"/>
+        <location filename="mainwindow.cpp" line="1798"/>
         <source>Site Numbers</source>
         <translation>Sites序号</translation>
     </message>
