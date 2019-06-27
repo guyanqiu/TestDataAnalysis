@@ -5,7 +5,9 @@
 #include <cstring>
 #include <cstdlib>
 #include <algorithm>
+#include <locale>
 #include <map>
+
 //#define _DEBUG_FOR_DEBUG_
 #ifdef _DEBUG_FOR_DEBUG_
 #define dprintf(msg, ...)      { printf( msg,  ##__VA_ARGS__ );}
@@ -1233,17 +1235,24 @@ DataLogType DataLogImpl::GetFileTypeBySuffix(const char* filename)
 	std::string::size_type pos = tem.find_last_of('.');
 	if(pos == std::string::npos) return OTHER_FILE;
 	std::string suffix = tem.substr(pos);
+    std::locale loc;
+    std::string new_suffix(suffix);
+    for (size_t i=0; i<suffix.length(); ++i)
+    {
+        new_suffix[i]=(std::tolower(suffix[i],loc));
+    }
+    dprintf("new_suffix=%s\n", new_suffix.c_str());
 
 	DataLogType type = OTHER_FILE;
-	if(suffix == std::string(".std") || suffix == std::string(".stdf"))
+	if(new_suffix == std::string(".std") || new_suffix == std::string(".stdf"))
 		type = STDF_FILE;
-	else if(suffix == std::string(".log"))
+	else if(new_suffix == std::string(".log"))
 		type = LOG_FILE;
-	else if(suffix == std::string(".csv"))
+	else if(new_suffix == std::string(".csv"))
 		type = CSV_FILE;
-    else if(suffix == std::string(".txt"))
+    else if(new_suffix == std::string(".txt"))
         type = TXT_FILE;
-    else if(suffix == std::string(".xls"))
+    else if(new_suffix == std::string(".xls"))
         type = TAB_FILE;
 	else
 		type = OTHER_FILE;
@@ -1736,6 +1745,7 @@ DataLogError DataLogImpl::ReadFromCSV(const char* filename)
 	}
 	in.close();
 	delete hold_items_site;
+	if(!reach_test_name || !reach_data_value) return FILE_FORMATE_ERROR;
     if(SiteList.size() == 0) return NO_DATA_TO_READ;
     HBin_For_All_Sites = false;
     SBin_For_All_Sites = false;
@@ -1864,9 +1874,20 @@ DataLogError DataLogImpl::ReadDataLog(const char* filename)
 	{
 	case STDF_FILE: return ReadFromSTDF(filename);
 	case LOG_FILE: return ReadFromLog(filename);
-	case CSV_FILE: return ReadFromCSV(filename);
+	case CSV_FILE:
+	    {
+	        DataLogError ret =  ReadFromCSV(filename);
+	        dprintf("Error in ReadFromCSV =%d\n", ret);
+	        if(ret == FILE_FORMATE_ERROR)
+            {
+                dprintf("in ReadFromTabXLS\n");
+                ret = ReadFromTabXLS(filename, ',');
+                dprintf("Error in ReadFromTabXLS =%d\n", ret);
+            }
+            return ret;
+	    }
     case TXT_FILE: return ReadFromTXT(filename);
-    case TAB_FILE: return ReadFromTabXLS(filename);
+    case TAB_FILE: return ReadFromTabXLS(filename, '\t');
 	default: return FILE_FORMATE_ERROR;
 	}
 }
@@ -2142,16 +2163,65 @@ bool DataLogImpl::IsHBinForAllSites()
 }
 
 //////////////////////////////////////////////////////////////////////////
+static void get_limits(const char* str, std::string& low, std::string& high, const char sepatator)
+{
+    std::string str_separator(1, sepatator);
+    if(str)
+    {
+        std::string temp_left(str);
+        std::size_t fount_number = temp_left.find_first_of("+-0123456789");
+        if(fount_number == std::string::npos)
+        {
+            low = sepatator;
+            high = sepatator;
+            return;
+        }
 
-DataLogError DataLogImpl::ReadFromTabXLS(const char* filename)
+        std::size_t found_left = temp_left.find("<=");
+        if(found_left == std::string::npos)
+        {
+            low = sepatator;
+            high = sepatator;
+            return;
+        }
+        std::string str1 = temp_left.substr(0, found_left);
+        std::string temp_right = temp_left.substr(found_left+2);
+        std::size_t fount_right =temp_right.find("<=");
+        if(fount_right == std::string::npos)
+        {
+            if(fount_number == 0)
+            {
+                low = str1 + str_separator;
+                high = str_separator;
+            }
+            else
+            {
+                low = str_separator;
+                high = temp_right + str_separator;
+            }
+        }
+        else
+        {
+            low = str1 + str_separator;
+            high = temp_right.substr(fount_right+2)+str_separator;
+        }
+    }
+    else
+    {
+        low = sepatator;
+        high = sepatator;
+    }
+}
+
+DataLogError DataLogImpl::ReadFromTabXLS(const char* filename, const char seprator)
 {
     std::ifstream in(filename, std::ios::in);
 	if(!in) return READ_FILE_ERROR;
 
 	CSVLine line;
 	bool is_strict = false;
-	const char seprator = '\t';
 	const char* company ="PowerTECH";
+	const char* test_file_name_str = "TestFileName";
 	const char* max_limit_str = "Max Limit";
 	const char* min_limit_str = "Min Limit";
 	const char* low_limit_str = "Lower Limit";
@@ -2167,20 +2237,100 @@ DataLogError DataLogImpl::ReadFromTabXLS(const char* filename)
 	const char* xcoord_str = "XCoord";
 	//const char* ycoord_str = "YCoord";
 	const char* site_str = "Site #";
+	std::string min_limits;
+	std::string max_limits;
 
 	// Check first line contain the company name
-	if((in.good() && !in.eof()))
+	const char* find_str = nullptr;
+	for(int i = 0; i < 100; i++)
     {
-        const char* a_line = line.read_line(in, is_strict);
-		const char* find_str = std::strstr(a_line, company);
-		if(find_str == NULL)
+        if((in.good() && !in.eof()))
         {
-            in.close();
-            return FILE_FORMATE_ERROR;
+            const char* a_line = line.read_line(in, is_strict);
+            if(!a_line) continue;
+            find_str = std::strstr(a_line, company);
+            if(find_str != NULL) break;
+
+            find_str = std::strstr(a_line, test_file_name_str);
+            if(find_str != NULL) break;
+        }
+    }
+    if(find_str == NULL)
+    {
+        in.close();
+        return FILE_FORMATE_ERROR;
+    }
+
+    // check compare for limits
+    std::vector<std::string> d_low_limits;
+    std::vector<std::string> d_high_limits;
+    unsigned int compare_index = 0;
+    std::string str_separator(1, seprator);
+
+    in.clear();
+    in.seekg(0, std::ios::beg);
+
+    CSVParser parser;
+
+    bool find_compare_flag = false;
+    for(int i = 0; i < 100; i++)
+    {
+        if((in.good() && !in.eof()))
+        {
+            const char* a_line = line.read_line(in, is_strict);
+            if(!a_line || std::strlen(a_line) == 0) continue;
+            else
+            {
+                unsigned int count = parser.parse(a_line, seprator);
+                const char *temp_string = parser.get_string(0);
+                const char *find_compare = std::strstr(temp_string, "Compare");
+                if(find_compare)
+                {
+                    if(compare_index == 0)
+                    {
+                        for(unsigned int i = 0; i < count; i++)
+                        {
+                            temp_string = parser.get_string(i);
+                            std::string low, high;
+                            get_limits(temp_string, low, high, seprator);
+                            d_low_limits.push_back(low);
+                            d_high_limits.push_back(high);
+                            find_compare_flag = true;
+                        }
+                        compare_index++;
+                    }
+                    else
+                    {
+                        unsigned int length_low = d_low_limits.size();
+                        unsigned int length_high = d_high_limits.size();
+                        for(unsigned int i = 0; i < count; i++)
+                        {
+                            temp_string = parser.get_string(i);
+                            std::string low, high;
+                            get_limits(temp_string, low, high, seprator);
+                            if(low != str_separator)
+                            {
+                                if(i+compare_index < length_low) d_low_limits[i+compare_index]=low;
+                                else d_low_limits.push_back(low);
+                            }
+                            if(high != str_separator)
+                            {
+                                if(i+compare_index < length_high) d_high_limits[i+compare_index]=low;
+                                else d_high_limits.push_back(high);
+                            }
+                        }
+                        compare_index++;
+                    }
+                }
+            }
         }
     }
 
-	CSVParser parser;
+    if(find_compare_flag)
+    {
+        for(unsigned int i = 0; i < d_low_limits.size(); i++) min_limits += d_low_limits[i];
+        for(unsigned int i = 0; i < d_high_limits.size(); i++) max_limits += d_high_limits[i];
+    }
 
 	unsigned int data_start_index = 0;
 	unsigned int sbin_index = 2;
@@ -2201,11 +2351,11 @@ DataLogError DataLogImpl::ReadFromTabXLS(const char* filename)
 	bool has_units_line = false;
 
 	unsigned int device_index = 0;
-	std::string min_limits;
-	std::string max_limits;
 	std::string all_labels;
 	std::string all_units;
 
+	in.clear();
+    in.seekg(0, std::ios::beg);
 	while(in.good() && !in.eof())
 	{
 		const char* a_line = line.read_line(in, is_strict);
@@ -2420,13 +2570,25 @@ DataLogError DataLogImpl::ReadFromTabXLS(const char* filename)
                     }
                 }
 
+                // delete more tab tailed
+                for(unsigned int m = data_start_index; m < count_items; m++)
+                {
+                    if(std::strlen(parser_items.get_string(m)) < 1)
+                    {
+                        count_items = m;
+                        dprintf("count_items=%u\n", data_start_index);
+                        break;
+                    }
+                }
+
                 unsigned int test_number = 0;
 
                 for(unsigned int m = data_start_index; m < count_items; m++)
                 {
+                    const char* label = parser_items.get_string(m);
+
                     std::string current_high_limit_str, current_low_limit_str;
                     TestItem * item = new TestItem();
-                    const char* label = parser_items.get_string(m);
                     dprintf("current lable is %s\n", label);
                     std::string  label_string = std::string(label);
                     std::size_t found_space = label_string.find_first_of(' ');
@@ -2452,12 +2614,31 @@ DataLogError DataLogImpl::ReadFromTabXLS(const char* filename)
                     }
                     else
                     {
+                        std::size_t found_bracket1 = label_string.find_last_of('(');
+                        std::string new_babel;
+                        if(found_bracket1 != std::string::npos && found_bracket1 != 0)
+                        {
+                            std::size_t found_bracket2 = label_string.find_last_of(')');
+                            if(found_bracket2 != std::string::npos)
+                            {
+                                new_babel = label_string.substr(0, found_bracket1);
+                                std::string unit = label_string.substr(found_bracket1+1, found_bracket2-found_bracket1-1);
+                                dprintf("new label=%s, unit=%s\n", new_babel.c_str(), unit.c_str());
+                                item->set_unit(unit.c_str());
+                            }
+                        }
+                        else
+                        {
+                            new_babel = label_string;
+                        }
+
                         test_number++;
-                        item->set_label(label);
+                        item->set_label(new_babel.c_str());
                         item->set_number(test_number);
                     }
 
                     // set low first
+                    double low_limit_value;
                     if(m < count_low_limit)
                     {
                         const char* temp_low = parser_low_limit.get_string(m);
@@ -2467,8 +2648,8 @@ DataLogError DataLogImpl::ReadFromTabXLS(const char* filename)
                         {
                             std::size_t found = temp_low_str.find_last_of(number_digits);
                             std::string low_str = temp_low_str.substr(0, found+1);
-                            double low_limit = std::atof(low_str.c_str());
-                            item->set_lowlimit(low_limit);
+                            low_limit_value = std::atof(low_str.c_str());
+                            item->set_lowlimit(low_limit_value);
                             if(found < length-1)
                             {
                                 std::string units = temp_low_str.substr(found+1);
@@ -2479,6 +2660,7 @@ DataLogError DataLogImpl::ReadFromTabXLS(const char* filename)
                     }
 
                     // set high overwrite
+                    double high_limit_value;
                     if(m < count_hihg_limit)
                     {
                         const char* temp_high = parser_high_limit.get_string(m);
@@ -2488,9 +2670,9 @@ DataLogError DataLogImpl::ReadFromTabXLS(const char* filename)
                         {
                             std::size_t found = temp_high_str.find_last_of(number_digits);
                             std::string high_str = temp_high_str.substr(0, found+1);
-                            double high_limit = std::atof(high_str.c_str());
+                            high_limit_value = std::atof(high_str.c_str());
                             dprintf("temp_high=%s, found=%u, high_str=%s\n",temp_high,found, high_str.c_str());
-                            item->set_highlimit(high_limit);
+                            item->set_highlimit(high_limit_value);
                             if(found < length-1)
                             {
                                 std::string units = temp_high_str.substr(found+1);
@@ -2528,6 +2710,30 @@ DataLogError DataLogImpl::ReadFromTabXLS(const char* filename)
                             item->set_unit(temp_unit);
                         }
                     }
+
+                    if(find_compare_flag)
+                    {
+                        if(item->highlimit_valid() && item->lowlimit_valid())
+                        {
+                            double low_value = item->get_lowlimit();
+                            double high_value = item->get_highlimit();
+                            if(low_value > high_value)
+                            {
+                                item->set_lowlimit(high_value);
+                                item->set_highlimit(low_value);
+                            }
+                        }
+                        if(!item->lowlimit_valid() && item->highlimit_valid())
+                        {
+                            double high_value = item->get_highlimit();
+                            if(high_value < 0)
+                            {
+                                item->set_lowlimit(high_value);
+                                item->set_highlimit(0);
+                            }
+                        }
+                    }
+
 
                     hold_items_site->add_item(item);
                 }

@@ -469,7 +469,6 @@ void MainWindow::OpenDataLogFiles()
     GetSelectedSites();
 }
 
-
 unsigned int MainWindow::GetSelectedSites()
 {
     mSelectedSiteList.clear();
@@ -667,7 +666,7 @@ unsigned int MainWindow::PlotLineChart()
         {
             QScatterSeries *series_scatter = new QScatterSeries;
             series_scatter->setMarkerSize(5.0);
-            connect(series_scatter, &QScatterSeries::hovered, this, &on_slotPointHoverd);
+            connect(series_scatter, &QScatterSeries::hovered, this, &MainWindow::on_slotPointHoverd);
             series_scatter->append(points);
             series_scatter->setPen(pen);
             mChart->addSeries(series_scatter);
@@ -881,10 +880,10 @@ void MainWindow::PlotSPCChart()
     TestItem* item = item_info.item;
 
     if(item->highlimit_valid()) high_limit = item->get_highlimit();
-    else high_limit = mDefaultHighLimit;
+    else high_limit = item->get_max();
 
     if(item->lowlimit_valid()) low_limit = item->get_lowlimit();
-    else low_limit = mDefaultLowLimit;
+    else low_limit = item->get_min();
 
     low_limit_list.resize(max_device_count);
     high_limit_list.resize(max_device_count);
@@ -1821,7 +1820,7 @@ void MainWindow::on_ScatterPlotButton_clicked()
 void MainWindow::on_AboutAction_triggered()
 {
     QString title = QObject::tr("About");
-    QString message = QObject::tr("------ Version 4.1.0.0 -------\n");
+    QString message = QObject::tr("------ Version 4.2.0.0 -------\n");
     message += QObject::tr("-- This Software is Free of Charge, \n");
     message += QObject::tr("   Unlicensed and comes with No Warranty.");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
@@ -1870,6 +1869,7 @@ void MainWindow::on_UpdateInfoAction_triggered()
     message  += QObject::tr("- 2019.06.17 Add the Test Number for Distinguish the Same Test Labels. \n");
 	message  += QObject::tr("- 2019.06.20 Support the Powertech TAB Separator file format partially\n");
     message  += QObject::tr("- 2019.06.24 Optimized the code for chart plot\n");
+    message  += QObject::tr("- 2019.06.27 Optimized the code for file format support\n");
     QMessageBox msgDlg(QMessageBox::Information, title, message, QMessageBox::Ok,NULL);
     msgDlg.exec();
 }

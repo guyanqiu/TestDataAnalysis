@@ -184,7 +184,7 @@ private:
     DataLogError ReadFromLog(const char* filename);
     DataLogError ReadFromCSV(const char* filename);
     DataLogError ReadFromTXT(const char* filename);
-    DataLogError ReadFromTabXLS(const char* filename);
+    DataLogError ReadFromTabXLS(const char* filename, const char seprator);
 
     void SetSiteList(const StdfSDR& sdr);
     void SetItemValue(TestItem* item, const StdfPTR& ptr);

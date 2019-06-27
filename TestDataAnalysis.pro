@@ -8,7 +8,7 @@ QT       += core gui printsupport charts gui-private
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = TestDataAnalysis.Win10.4.1
+TARGET = TestDataAnalysis.Win10.4.2
 TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++11
 QMAKE_LFLAGS   += -static
@@ -68,6 +68,7 @@ SOURCES += main.cpp\
     xlsx/xlsxworksheet.cpp \
     xlsx/xlsxzipreader.cpp \
     xlsx/xlsxzipwriter.cpp
+
 
 HEADERS  += mainwindow.h \
     correlation/correlation.h \
@@ -136,6 +137,7 @@ HEADERS  += mainwindow.h \
     xlsx/xlsxworksheet_p.h \
     xlsx/xlsxzipreader_p.h \
     xlsx/xlsxzipwriter_p.h
+
     
 
 FORMS    += mainwindow.ui \
@@ -154,6 +156,8 @@ RESOURCES    += TestDataAnslysis.qrc
 RC_FILE      += TestDataAnslysis.rc
 INCLUDEPATH  += xlsx
 DEFINES += XLSX_NO_LIB
+
+
 
 
 
