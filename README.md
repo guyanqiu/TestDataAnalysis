@@ -1,2 +1,2 @@
 # TestDataAnalysis
-This software forSTDF fils data analysis, supports GR&R,SPC,TCS and some charts.
+This software for STDF files data analysis of ATE, supports GR&R,SPC,TCS and some charts.
